@@ -35,8 +35,7 @@ namespace TwinSpace { int nTwin = 2; }
 int main()
 {
 
-    
-    /**
+        /**
      * Задание 1. Работа с отладчиком. Базовые типы данных. Литералы.
      *
      * Выполняя программу по шагам, следите за значениями переменных и
@@ -55,7 +54,7 @@ int main()
 
     unsigned char ucByte = 0x41; //65 'A'
     ucByte = 'B'; //66 'B'
-    ucByte = -1; //255 '\377'
+    ucByte = -1; //255 '\377' - 8ричное 255
 
     int iInt = 0xffffffff; //-1
 
@@ -84,6 +83,7 @@ int main()
     wchar_t cw = L'Ф'; //1060 L'Ф'
     size_t n = sizeof(cw); //2 на винде, 4 через wls(шок)
 
+
     /**
      * Задание 2a. Неявное приведение типов данных. 
      *
@@ -92,8 +92,8 @@ int main()
      */
 
     iInt = 1;
-    double dDouble1 = iInt / 3;     // (1)
-    double dDouble2 = iInt / 3.;    // (2)
+    double dDouble1 = (int) iInt / 3;     // (1) 0
+    double dDouble2 = (double) iInt / 3.;    // (2) 0.33333333333333331
 
     /**
      * Ассоциативность операторов.
@@ -109,9 +109,9 @@ int main()
      */
 
     short sShort;
-    dDouble = fFloat = iInt = sShort = cByte = 3.3 / 3; // (1)
+    dDouble = fFloat = iInt = sShort = cByte = 3.3 / 3; // (1) справа налево, cByte1 = 1,тк целое, все остальные по цепочке
     
-    cByte = sShort = iInt = fFloat = dDouble = 3.3 / 3; // (2)
+    cByte = sShort = iInt = fFloat = dDouble = 3.3 / 3; // (2) dDouble = 1.0999999999999999, fFloat = 1.10000002, далее приводятся типы, 1.10000002 округляется до 1
 
     /**
      * Ниже Вам дан пример "небрежного" использования неявного приведения
@@ -122,10 +122,10 @@ int main()
      */
 
     iInt = 257;
-    cByte = iInt; //
+    cByte = (char) iInt; // останется 1, тк 257 = 100000001, останется 1 = 00000001, тк char хранит только 1 байт, а 9 бит обрежется
 
     unsigned char cN1 = 255, cN2 = 2, cSum;
-    cSum = cN1 + cN2; //
+    cSum = (unsigned char) cN1 + (unsigned char) cN2; // получилось (cN1 + cN2) = 257 = 100000001 -> 1 обрежется, останется 00000001 = 1
 
     /**
      * Сравните предыдущую строчку с приведенной ниже. 
@@ -136,7 +136,7 @@ int main()
      * Напишите явно преобразования, которые неявно выполняет компилятор
      */
 
-    int iSum = cN1 + cN2; //
+    int iSum = (int) cN1 + (int) cN2; //int хранит до 4 байтов, здесь же нужно всего 2(хотя используется 4)
 
     /**
      * Напишите, почему при сложении одинаковых значений (одинаковых в двоичной
@@ -146,10 +146,10 @@ int main()
      * объясните, что при этом происходит.
      */
 
-    char c1 = 0xff, c2 = 2;
-    unsigned char uc1 = 0xff, uc2 = 2;
-    int iSum1 = c1 + c2;   //(1)
-    int iSum2 = uc1 + uc2; //(2)
+    char c1 = 0xff, c2 = 2; // c1 = -1 (тк с1 signed), c2 = 2
+    unsigned char uc1 = 0xff, uc2 = 2; // uc1 = 255, uc2 = 2
+    int iSum1 = (int) c1 + (int) c2;   //(1) -1 + 2 = 1
+    int iSum2 = (int) uc1 + (int) uc2; //(2) 255 + 2 = 257
 
     
     /**
@@ -161,7 +161,7 @@ int main()
      */
 
     int nTmp = 100, nn = 3;
-    dDouble = 3.3 + nTmp / nn; // (3)
+    dDouble = 3.3 + (int)(nTmp / nn); // (3) dDouble = 36.299999999999997 (не 36.3 из-за специфики хранения вещественных чисел)
 
     /**
      * Получите результат без потери точности с помощью оператора явного
@@ -169,6 +169,8 @@ int main()
      */
 
      // double dDouble3 = ...     // (4)
+
+    double dDouble3 = 3.3 + (double) nTmp / (double) nn; // можно привести только один из nTmp и nn
 
 
 
