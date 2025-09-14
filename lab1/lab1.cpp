@@ -291,27 +291,28 @@ nLocal1++;
 
 enum eColors
 {
-BLACK,
-BLUE,
-GREEN,
-RED=5,
-YELLOW,
-WHITE=RED+4
+BLACK, //неявная 0
+BLUE, //неявная 1
+GREEN,//неявная 2
+RED=5, //явная 5
+YELLOW,//неявная 6
+WHITE=RED+4 //явная 9
 };
 
-eColors myColors; //объявление переменной типа eColors 
-myColors = BLACK;
-myColors = BLUE;
-myColors = GREEN;
-myColors = RED;
-myColors = YELLOW;
-myColors = WHITE;
+eColors myColors; //объявление переменной типа eColors = BLACK
+myColors = BLACK; //BLACK
+myColors = BLUE; //BLUE 
+myColors = GREEN; //GREEN
+myColors = RED; //RED
+myColors = YELLOW; //YELLOW
+myColors = WHITE; //WHITE
 
 int nnn = BLACK; //любой целочисленной переменной можно присвоить
     //значение из списка инициализирующих значений
+    //nnn = 0
 
 //Именованные константы можно использовать в выражениях:
-nnn = BLUE | YELLOW;
+nnn = BLUE | YELLOW; //7 
 
 /**
  * Раскомментируйте следующую строку и обратите внимание на ошибку при
@@ -321,14 +322,14 @@ nnn = BLUE | YELLOW;
  * ошибки.
  */
 
-// myColors = 1; 
+myColors = (eColors) 1; 
 
 /**
  * Выполните следующее присваивание НЕ меняя перечисление и тип переменной
  * myColors.
  */
 
-// myColors = 123;
+myColors = (eColors) 123;
 
 
 /**
@@ -341,11 +342,11 @@ nnn = BLUE | YELLOW;
  */
 
 int nNumber = 1;
-bool b = (nNumber != 0); //
-b = (nNumber == 0); //
-b = (nNumber > 0); //
-b = (nNumber > 1); //
-b = 5; //
+bool b = (nNumber != 0); // true
+b = (nNumber == 0); // false
+b = (nNumber > 0); // true
+b = (nNumber > 1); //false
+b = 5; //true
 
 /**
  * Вы всегда можете преобразовать логическое значение к целому явно или
@@ -355,7 +356,7 @@ b = 5; //
  * компилятор?
  */
 
-int tmp =  b + 1; //
+int tmp =  b + 1; // true=1, false=0, 1+1=2
 
 /**
  * Задание 6.2.
@@ -377,11 +378,11 @@ int tmp =  b + 1; //
 
 {
 int year = 1823;
-// year = 1824;
-// year = 1900;
-// year = 2000;
+year = 1824;
+year = 1900;
+year = 2000;
 
-// bool isLeapYear = 
+bool isLeapYear = (year % 4 == 0) && (year % 100 != 0 || year % 400 == 0);
 }
 
 /**
