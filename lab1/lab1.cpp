@@ -393,7 +393,7 @@ bool isLeapYear = (year % 4 == 0) && (year % 100 != 0 || year % 400 == 0);
  */
 
 {
-//  const int nN; //
+//const int nN; uninitialized 'const nN' - const нужно инициализировать сразу
 //  nN = 1; //
 }
 
@@ -414,8 +414,17 @@ bool isLeapYear = (year % 4 == 0) && (year % 100 != 0 || year % 400 == 0);
  */
 
 {
+using namespace std;
 int inputInt;
 char inputChar;
+
+cout << "Номер задания: 8" << endl;
+cout << "Введите целое число: ";
+cin >> inputInt;
+cout << "Введите символ: ";
+cin >> inputChar;
+cout << "Ваш символ: " << inputChar << endl;
+cout << "Ваше число: " << inputInt << endl;
 }
 
 /**
