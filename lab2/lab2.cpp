@@ -337,6 +337,7 @@ int main()
     #ifdef NDEBUG
         std::cout << "Debug version 513.02.01.03\nDate: " << __DATE__ << "\nFile: " << __FILE__ << "\nFunction: " << __func__ << "\nLine: " << __LINE__ << std::endl;
     #endif
+    
     /**
      * Задание 3.Заголовочные файлы. Директива #include.
      */
