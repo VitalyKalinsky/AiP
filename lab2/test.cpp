@@ -1,35 +1,31 @@
 #include <iostream>
-int main(int argc, char const *argv[])
-{
-/**
-     * Задание 1.4.
-     *
-     * Какие операции следует применить к заданному ниже операнду sNum для
-     * того, чтобы переменная sRes приняла требуемое значение? Каждую побитовую
-     * операцию можно использовать только 1 раз.
-     *
-     * Замечание: значения подобраны таким образом, что в каждом случае
-     * достаточно использовать один оператор (и при необходимости маску). 
+#include <cmath>
+#define LENGHT(r) (2 * M_PI * (r))
+int main(int argc, char const *argv[]){
+ /**
+     * Задание 2.2.2.
+     * 
+     * Определите макрос MAX(A, B) для вычисления б'ольшего значения из двух.
      */
 
     {
-        short sNum = 0x8008; //10000000 00001000
-        short sRes;
-        /** sRes == 0x7ff7 */ //01111111 11110111
-        sRes = ~sNum;
-        /** sRes == 0x8ff8 */ //10001111 11111000
-        sRes = sNum | 0x0ff0;
+/*#define NNN
+#define MMM
+для iNN = 0*/
+// #define MMM для iNN = 1
+// #define NNN для iNN = 2
+    int iNN;
+    #if defined NNN && defined MMM
+            iNN = 0;
+    #elif defined MMM
+            iNN = 1;
+    #elif defined NNN 
+            iNN = 2;
 
-        /** sRes == 0x0008 */ //00000000 00001000
-        sRes = sNum & 0x000f;
+    #else
+            iNN = -1;
+    #endif
 
-        /** sRes == 0x7f08 */ //01111111 00001000
-        sRes = sNum ^ 0xff00;
-
-        /** sRes == 0xf001 */ //11110000 00000001
-        sRes = sNum >> 3;
-
-        /** sRes == 0x0010 */ //00000000 00010000
-        sRes = sNum << 1;
+    std::cout << iNN;
     }
 }

@@ -4,8 +4,7 @@
  */
 
 #include <iostream>
-// #include <cmath>
-
+#include <cmath>
 int main()
 {
     /**
@@ -187,8 +186,12 @@ int main()
      */
 
     {
-        // float radius = ...;
-        // float circumference = ...;
+        float radius;
+        std::cout << "Введите радиус: ";
+        std::cin >> radius;
+        float circumference = 2 * M_PI * radius;
+        std::cout << "Длина окружности равна " << circumference << std::endl;
+
     }
     
     /**
@@ -205,8 +208,9 @@ int main()
     {
         /** Протестируйте написанный макрос для следующих ситуаций */
 
-        //float l1 = LENGHT(1 + 2); // должно быть 18.8495...
-        //float l2 = 1 / LENGHT(2); // должно быть 0.07957...
+#define LENGHT(r) (2 * M_PI * (r))
+        float l1 = LENGHT(1 + 2); // должно быть 18.8495...
+        float l2 = 1 / LENGHT(2); // должно быть 0.07957...
     }
 
     /**
@@ -225,11 +229,12 @@ int main()
          * Отметьте случаи, когда избежать побочных эффектов невозможно.
          */
 
-        // int i = 10, j = 12, k;
-        // k = MAX(i, j);
-        // k = MAX(j, i) * 2;
-        // k = MAX(j, i+3);
-        // k = MAX(i--, j++);
+#define MAX(a, b) ({decltype(a) _a = a; decltype(b) _b = b; _a > _b ? _a : _b;})
+        int i = 10, j = 12, k;
+        k = MAX(i, j); //k = 12
+        k = MAX(j, i) * 2; //k = 24
+        k = MAX(j, i+3); //k = 13
+        k = MAX(i--, j++); //i = 9, j = 13, k = 12 - избежать побочных эффектов невозможно из-за операций инкремента и декремента. если написать просто #define MAX(a, b) ((a) > (b) ? (a) : (b)), то i-- и j++ применится 2 раза, чего быть не должно
     }
 
     /**
@@ -245,11 +250,15 @@ int main()
      */
 
     {
-        // int x1=1, y1=-1;
-        // EXCHANGE(x1,y1);
+        
+#define EXCHANGE(x, y) ({decltype(x) tmp = x; x = y; y = tmp;})
+        int x1=1, y1=-1;
+        EXCHANGE(x1,y1);
 
-        // int x2=100, y2=-100;
-        // EXCHANGE(x2,y2);
+        int x2=100, y2=-100;
+        EXCHANGE(x2,y2);
+
+        std::cout << "";
     }
 
     /**
@@ -262,17 +271,23 @@ int main()
      */
 
     {
-        int iNN;
-#if defined NNN && defined MMM
-        iNN = 0;
-#elif defined MMM
-        iNN = 1;
-#elif defined NNN 
-        iNN = 2;
+    /*#define NNN
+    #define MMM
+    для iNN = 0*/
+    // #define MMM для iNN = 1
+    // #define NNN для iNN = 2
+    int iNN;
+    #if defined NNN && defined MMM
+            iNN = 0;
+    #elif defined MMM
+            iNN = 1;
+    #elif defined NNN 
+            iNN = 2;
 
-#else
-        iNN = -1;
-#endif
+    #else
+            iNN = -1;
+    #endif
+
     }
 
     /**
@@ -289,7 +304,10 @@ int main()
      * Уберите из кода определения макросов NNN и MMM из прошлого задания и
      * приведите команды компиляции, которые заставят переменную iNN принять
      * нужное значение. 
-     *
+     * gcc -D NNN -D MMM lab2.cpp -lstdc++
+     * gcc -D NNN lab2.cpp -lstdc++
+     * gcc -D MMM lab2.cpp -lstdc++
+     * 
      * Проверьте их работоспособность.
      */
 
@@ -313,8 +331,12 @@ int main()
      * ключ компилятора `-o`, примерно так: 
      *
      * `gcc <ваши опции> -o release.out lab2.cpp`
+     *  gcc -D NDEBUG -o debug2.out lab2.cpp -lstdc++
+     *  gcc -o debug2.out lab2.cpp -lstdc++
      */
-
+    #ifdef NDEBUG
+        std::cout << "Debug version 513.02.01.03\nDate: " << __DATE__ << "\nFile: " << __FILE__ << "\nFunction: " << __func__ << "\nLine: " << __LINE__ << std::endl;
+    #endif
     /**
      * Задание 3.Заголовочные файлы. Директива #include.
      */
