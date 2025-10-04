@@ -28,13 +28,16 @@
  */
 
 #include  <iostream>
-
+#include <windows.h>
+#include <locale>
 int nTwin = 1;
 namespace TwinSpace { int nTwin = 2; }
 
 int main()
 {
-
+    SetConsoleOutputCP(CP_UTF8);
+    SetConsoleCP(CP_UTF8);
+    std::locale::global(std::locale("C"));
 /**
  * Задание 1. Работа с отладчиком. Базовые типы данных. Литералы.
  *
@@ -72,6 +75,8 @@ double dDouble = 1.; //1
 double d = 0.1234567890123456789123456789; //0.12345678901234568 
 float  f = 0.1234567890123456789123456789; //0.123456791
 
+d = 0.0000000000000000000000000123; // TODO: потеряются ли 23 в конце? почему? 1.23e-26
+std::cout << d+0.0000000000000000001;
 d = 1.; //1
 d = 0.999999999999999999999999999999999; //1
 
@@ -92,7 +97,7 @@ size_t n = sizeof(cw); //2 на винде, 4 через wls(шок)
  */
 
 iInt = 1;
-double dDouble1 = (int) iInt / 3;     // (1) 0
+double dDouble1 = iInt / 3;     // (1) 0 целочисленное
 double dDouble2 = (double) iInt / 3.;    // (2) 0.33333333333333331
 
 /**
@@ -451,7 +456,7 @@ char ch;
 /** Тут сформируйте значение переменной ch с помощью потока ввода. */
 cout << "Введите символ для перевода в другой регистр: ";
 cin >> ch;
-if (ch < 65 || (ch > 90 && ch < 97) || ch > 122){
+if (ch < 65 || (ch > 'Z' && ch < 'a') || ch > 122){
     cout << "Вы ввели не букву!";
 }
 else{
