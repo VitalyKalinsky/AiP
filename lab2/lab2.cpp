@@ -399,8 +399,8 @@ int main()
         int a;
         char b;
         double c;
-        int *ptr_a = &a;   // указывает на первый байт, где хранится а
-        char *ptr_b = &b;  // указывает на первый байт, где хранится b
+        int *ptr_a = &a;    // указывает на первый байт, где хранится а
+        char *ptr_b = &b;   // указывает на первый байт, где хранится b
         double *ptr_c = &c; // указывает на первый байт, где хранится c
     }
 
@@ -416,7 +416,7 @@ int main()
      */
 
     {
-        char *det_char = "Hello Vitalya"; 
+        char *det_char = "Hello Vitalya";
         char c = det_char[4];
         // *det_char = 'x'; вызовет ошибку, тк строка неизменяемая
     }
@@ -501,10 +501,10 @@ int main()
         pucObject = reinterpret_cast<unsigned char *>(pnObject);
 
         /** Проследите за значениями переменной `cc`. Объясните результаты. */
-        cc = pucObject[0];
-        cc = pucObject[1];
-        cc = pucObject[2];
-        cc = pucObject[3];
+        cc = pucObject[0]; // из-за Little-Endian байты в обратном порядке. это байт 0х88, а тк char знаковый 88 в 16-ричной это 10001000 в 2-ичной, в дополнительном коде это -120
+        cc = pucObject[1]; // 01110111 = 119
+        cc = pucObject[2]; // 01100110 = 102
+        cc = pucObject[3]; // 01010101 = 85
 
         /**
          * Выполните следующие строки, наблюдая за значениями следующих
@@ -512,11 +512,11 @@ int main()
          *
          * Зафиксируйте и интерпретируйте результаты.
          */
-        cc = *(pucObject++);
-        cc = (*pucObject)++;
+        cc = *(pucObject++); // разыменование 10001000 - первого байта, pucObject указывает на 2 байт, *pucObject не изменился
+        cc = (*pucObject)++; // cc = 119, pucObject указывает на 2 байт, *pucObject стал 120
 
-        cc = ++*(pucObject);
-        cc = *(++pucObject);
+        cc = ++*(pucObject); // cc = 121, pucObject указывает на 2 байт, *pucObject стал 121
+        cc = *(++pucObject); // cc = 102, pucObject указывает на 3 байт, *pucObject стал 102
     }
 
     /**
@@ -537,15 +537,16 @@ int main()
         int nObject3 = 5;
         char cObject3 = 'A';
         int *pInt = &nObject3;
-        pVoid = &nObject3;
-        pVoid = &cObject3;
-        pVoid = pInt;
+        pVoid = &nObject3; // хранит адрес nObject3
+        pVoid = &cObject3; // хранит адрес сObject3
+        pVoid = pInt;      // хранит адрес nObject3
 
         /**
          * Прежде, чем раскомментировать следующую строчку, вспомните: что
          * нужно сделать, чтобы выражение стало корректным?
          */
         // pInt=pVoid;
+        pInt = static_cast<int *>(pVoid);
     }
 
     /**
@@ -556,7 +557,7 @@ int main()
      */
     {
         const int n = 1;
-        //... = &n;
+        const void *pN = &n;
     }
 
     /**
@@ -568,10 +569,10 @@ int main()
      */
 
     {
-        double dObject3 = 33.33;
-        // ... pVoid = &dObject3;  //(1)
+        double dObject3 = 33.33; // 8 байт 1000000010000001010101000111101 01110000101000111101011100001010
+        // void *pVoid = &dObject3; //(1)
 
-        // int nTmp = *(static_cast<int*>(pVoid) ); //(2)
+        // int nTmp = *(static_cast<int *>(pVoid)); //(2) //01110000101000111101011100001010 = 1889785610, т.к. байты числа идут справа налево, берутся последние 4 байта dObject3
     }
 
     /**
@@ -595,6 +596,11 @@ int main()
      */
 
     {
+        int n = 1;
+        int *const const_pn = &n;
+        int m = *const_pn;
+        *const_pn = 2;
+        // const_pn = &m; //не получится, т.к. указатель неизменяемый
     }
 
     /**
@@ -602,6 +608,11 @@ int main()
      */
 
     {
+        int n = 1;
+        const int *const_pn = &n;
+        int m = *const_pn;
+        //*const_pn = 2; //не получится, т.к. значение неизменяемое
+        const_pn = &m;
     }
 
     /**
@@ -609,6 +620,11 @@ int main()
      */
 
     {
+        int n = 1;
+        const int *const const_pn = &n;
+        int m = *const_pn;
+        //*const_pn = 2; //не получится, т.к. значение неизменяемое
+        // const_pn = &m; //не получится, т.к. указатель неизменяемый
     }
 
     /**
@@ -619,7 +635,11 @@ int main()
      */
 
     {
-        // const int nN = 1;
+        const int nN = 1;
+        const int *pnN = &nN;
+        int m = *pnN;
+        //*const_pn = 2; //не получится, т.к. значение неизменяемое
+        pnN = &m;
     }
 
     /**
@@ -633,23 +653,25 @@ int main()
          * Объявите указатель pn и проинициализируйте его так, чтобы он
          * "указывал" на n.
          */
-
+        int *pn = &n;
         /**
          * Объявите указатель ppn и проинициализируйте его так, чтобы он
          * "указывал" на pn.
          */
-
+        int **ppn = &pn;
         /**
          * Объявите указатель pppn и проинициализируйте его так, чтобы он
          * "указывал" на ppn.
          */
-
+        int ***pppn = &ppn;
         /**
          * С помощью указателей pn, ppn и pppn получите значение объекта n и
          * присвойте его m.
          */
 
-        // int m = ...;
+        int m = *pn;
+        m = **ppn;
+        m = ***pppn;
     }
     return 0;
 }
