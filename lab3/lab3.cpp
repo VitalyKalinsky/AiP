@@ -4,6 +4,8 @@
  */
 #include <iostream>
 #include <cstring>
+#include <ctime>
+#include <cstdlib>
 using namespace std;
 
 int main()
@@ -48,12 +50,14 @@ int main()
             {
                 for (int element : second_layer)
                 {
-                    cout << element << " ";
+                    cout << element << "  ";
                 }
                 cout << endl;
             }
-            cout << "---" << endl;
+            cout << "-------" << endl;
         }
+        cout << endl << "------------------------------------" << endl
+             << endl;
 #endif
     }
     /**
@@ -83,12 +87,14 @@ int main()
             {
                 for (int element : second_layer)
                 {
-                    cout << element << " ";
+                    cout << element << "  ";
                 }
                 cout << endl;
             }
-            cout << "---" << endl;
+            cout << "-------" << endl;
         }
+        cout << endl << "------------------------------------" << endl
+             << endl;
 #endif
     }
     /**
@@ -121,6 +127,8 @@ int main()
         }
 #ifdef DEBUG_VERSION
         cout << "Sum in task 1.3: " << sum << endl;
+        cout << endl << "------------------------------------" << endl
+             << endl;
 #endif
     }
     /**
@@ -148,19 +156,22 @@ int main()
             {{3}}};
 #ifdef DEBUG_VERSION
 
-        printf("\nЗадание 1.4\n");
+        printf("Задание 1.4\n");
         for (int (&first_layer)[3][3] : array)
         {
             for (int (&second_layer)[3] : first_layer)
             {
                 for (int element : second_layer)
                 {
-                    cout << element << " ";
+                    cout << element << "  ";
                 }
                 cout << endl;
             }
-            cout << "---" << endl;
+            cout << "-------" << endl;
         }
+
+        cout << endl << "------------------------------------" << endl
+             << endl;
 #endif
     }
     /**
@@ -184,25 +195,27 @@ int main()
         two_dim_array[1][4] = 't';
         // p_array[1][4] = 't'; //невозможно, тк строковые литералы read-only, но можно менять сами указатели
         p_array[1] = "New Vitalya";
-        
+
 #ifdef DEBUG_VERSION
-        printf("\nЗадание 1.5\n");
-        printf("Двухмерный массив:\n");
+        cout << "Задание 1.5" << endl;
+        cout << "Двухмерный массив:" << endl;
         for (int i = 0; i < 3; i++)
         {
-            printf("two_dim_array[%d] = %s\n", i, two_dim_array[i]);
+            cout << "two_dim_array[" << i << "] = " << two_dim_array[i] << endl;
         }
 
-        printf("Массив указателей:\n");
+        cout << "Массив указателей:" << endl;
         for (int i = 0; i < 3; i++)
         {
-            printf("p_array[%d] = %s\n", i, p_array[i]);
+            cout << "p_array[" << i << "] = " << p_array[i] << endl;
         }
-        printf("Размер памяти:\n");
 
-        printf("Размер two_dim_array: %ld байт\n", sizeof(two_dim_array)); // 30 байт (3 по 10)
-        printf("Размер p_array: %ld байт\n", sizeof(p_array));             // 24 байт (3 указателя по 8 байт)
+        cout << "Размер памяти:" << endl;
 
+        cout << "Размер two_dim_array: " << sizeof(two_dim_array) << " байт" << endl; // 30 байт (3 по 10)
+        cout << "Размер p_array: " << sizeof(p_array) << " байт" << endl;             // 24 байт (3 указателя по 8 байт)
+        cout << endl << "------------------------------------" << endl
+             << endl;
 #endif
     }
 
@@ -238,37 +251,131 @@ int main()
      *
      * Функция time() задает эту точку отсчета, считывая текущее время.
      */
+    {
+        cout << "Задание 2.1\n";
+        srand(time(0));
+        int N, M;
+        cout << "Введите количество строк N: ";
+        cin >> N;
+        cout << "Введите количество столбцов M: ";
+        cin >> M;
 
-    /**
-     * Задание 2.2.
-     *
-     * В сформированном массиве отсортируйте каждую строку по убыванию
-     * значений. Используйте сортировку "выбором".
-     */
+        int **array = new int *[N];
+        for (int i = 0; i < N; i++)
+        {
+            array[i] = new int[M];
+        }
 
-    /**
-     * Задание 2.3.
-     *
-     * Объявите одномерный массив размерностью N.
-     *
-     * Сформируйте значение i-ого элемента одномерного массива  равным среднему
-     * значению элементов i-ой строки двухмерного массива.
-     */
+        cout << "Сгенерированный массив " << N << "x" << M << ":" << endl;
+        for (int i = 0; i < N; i++)
+        {
+            for (int j = 0; j < M; j++)
+            {
+                array[i][j] = rand() % 100;
+                cout << array[i][j] << "\t";
+            }
+            cout << endl;
+        }
 
-    /**
-     * Задание 2.4.
-     *
-     * Убедитесь, что вся выделенная память очищена.
-     *
-     * Чтобы убедиться в этом, скомпилируйте программу с включенной проверкой
-     * утечек памяти - с ключом `-fsanitize=address`:
-     *
-     * `gcc <ваши обычные флаги> -fsanitize=address lab3.cpp`
-     *
-     * Если после выполнении программы выдаются сообщения об утечках, это
-     * означает, что где-то не удалена выделенная память.
-     */
+        {
+            int sum = 0;
+            for (int i = 0; i < N; i++)
+            {
+                for (int j = 0; j < M; j++)
+                {
+                    sum += array[i][j];
+                }
+            }
 
+            cout << "Сумма всех элементов массива: " << sum << endl;
+            cout << endl << "------------------------------------" << endl
+                 << endl;
+        }
+
+        /**
+         * Задание 2.2.
+         *
+         * В сформированном массиве отсортируйте каждую строку по убыванию
+         * значений. Используйте сортировку "выбором".
+         */
+        for (int row = 0; row < N; row++)
+        {
+            for (int i = M - 1; i > 0; i--)
+            {
+                int max = i;
+                for (int j = i; j > -1; j--)
+                {
+                    if (array[row][j] < array[row][max])
+                        max = j;
+                }
+                int tmp = array[row][max];
+                array[row][max] = array[row][i];
+                array[row][i] = tmp;
+            }
+        }
+#ifdef DEBUG_VERSION
+
+        printf("2.2 Отсортированный массив: \n");
+        for (int i = 0; i < N; i++)
+        {
+            for (int j = 0; j < M; j++)
+            {
+                cout << array[i][j] << "\t";
+            }
+            cout << endl;
+        }
+        cout << endl << "------------------------------------" << endl
+             << endl;
+#endif
+        /**
+         * Задание 2.3.
+         *
+         * Объявите одномерный массив размерностью N.
+         *
+         * Сформируйте значение i-ого элемента одномерного массива  равным среднему
+         * значению элементов i-ой строки двухмерного массива.
+         */
+        double *one_dim_array = new double[N];
+        for (int i = 0; i < N; i++)
+        {
+            int row_sum = 0;
+            for (int j = 0; j < M; j++)
+            {
+                row_sum += array[i][j];
+            }
+            one_dim_array[i] = (double)row_sum / M;
+        }
+#ifdef DEBUG_VERSION
+
+        printf("2.3 Массив средних: \n");
+        for (int i = 0; i < N; i++)
+        {
+            cout << one_dim_array[i] << endl;
+        }
+
+        cout << endl << "------------------------------------" << endl
+             << endl;
+#endif
+        /**
+         * Задание 2.4.
+         *
+         * Убедитесь, что вся выделенная память очищена.
+         *
+         * Чтобы убедиться в этом, скомпилируйте программу с включенной проверкой
+         * утечек памяти - с ключом `-fsanitize=address`:
+         *
+         * `gcc <ваши обычные флаги> -fsanitize=address lab3.cpp`
+         *
+         * Если после выполнении программы выдаются сообщения об утечках, это
+         * означает, что где-то не удалена выделенная память.
+         */
+        for (int i = 0; i < N; i++)
+        {
+            delete[] array[i];
+        }
+        delete[] array;
+        delete[] one_dim_array;
+    }
     /**
      * Задание 3.
      */
