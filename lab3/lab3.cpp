@@ -3,6 +3,7 @@
  * Простейшие алгоритмы сортировки и поиска. Сложные указатели.
  */
 #include <iostream>
+#include <cstring>
 using namespace std;
 
 int main()
@@ -75,7 +76,7 @@ int main()
             }
         }
 #ifdef DEBUG_VERSION
-        cout << "Task 1.2" << endl;
+        cout << "\nTask 1.2" << endl;
         for (int (&first_layer)[3][3] : array)
         {
             for (int (&second_layer)[3] : first_layer)
@@ -146,7 +147,8 @@ int main()
             {{2}},
             {{3}}};
 #ifdef DEBUG_VERSION
-        cout << "Task 1.4" << endl;
+
+        printf("\nЗадание 1.4\n");
         for (int (&first_layer)[3][3] : array)
         {
             for (int (&second_layer)[3] : first_layer)
@@ -168,6 +170,41 @@ int main()
      * двухмерный массив и массив указателей. Поясните разницу в использовании
      * элементов таких массивов.
      */
+
+    {
+        char two_dim_array[3][10] = {
+            "Hello",
+            "Vitalya",
+            "C++"};
+        const char *p_array[] = {
+            "Hello",
+            "Vitalya",
+            "C++"};
+
+        two_dim_array[1][4] = 't';
+        // p_array[1][4] = 't'; //невозможно, тк строковые литералы read-only, но можно менять сами указатели
+        p_array[1] = "New Vitalya";
+        
+#ifdef DEBUG_VERSION
+        printf("\nЗадание 1.5\n");
+        printf("Двухмерный массив:\n");
+        for (int i = 0; i < 3; i++)
+        {
+            printf("two_dim_array[%d] = %s\n", i, two_dim_array[i]);
+        }
+
+        printf("Массив указателей:\n");
+        for (int i = 0; i < 3; i++)
+        {
+            printf("p_array[%d] = %s\n", i, p_array[i]);
+        }
+        printf("Размер памяти:\n");
+
+        printf("Размер two_dim_array: %ld байт\n", sizeof(two_dim_array)); // 30 байт (3 по 10)
+        printf("Размер p_array: %ld байт\n", sizeof(p_array));             // 24 байт (3 указателя по 8 байт)
+
+#endif
+    }
 
     /**
      * Задание 2. Динамическое выделение памяти.
