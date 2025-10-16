@@ -5,8 +5,13 @@
 
 #include <iostream>
 #include <cmath>
+#include <windows.h>
+#include <locale>
 int main()
 {
+    SetConsoleOutputCP(CP_UTF8);
+    SetConsoleCP(CP_UTF8);
+    std::locale::global(std::locale("C"));
     /**
      * Задание 1. Побитовая арифметика (and, or, xor, not), сдвиги.
      */
@@ -298,6 +303,7 @@ int main()
 #else
         iNN = -1;
 #endif
+        std::cout << iNN << std::endl;
     }
 
 /**
@@ -314,9 +320,9 @@ int main()
  * Уберите из кода определения макросов NNN и MMM из прошлого задания и
  * приведите команды компиляции, которые заставят переменную iNN принять
  * нужное значение.
- * gcc -D NNN -D MMM lab2.cpp -lstdc++
- * gcc -D NNN lab2.cpp -lstdc++
- * gcc -D MMM lab2.cpp -lstdc++
+ * g++ -g -D NNN -D MMM .\lab2.cpp
+ * g++ -g -D NNN .\lab2.cpp
+ * g++ -g -D MMM .\lab2.cpp
  *
  * Проверьте их работоспособность.
  */
@@ -341,8 +347,8 @@ int main()
  * ключ компилятора `-o`, примерно так:
  *
  * `gcc <ваши опции> -o release.out lab2.cpp`
- *  gcc -D NDEBUG -o debug2.out lab2.cpp -lstdc++
- *  gcc -o debug2.out lab2.cpp -lstdc++
+ *  g++ -D NDEBUG -o .\debug2.out .\lab2.cpp
+ *  g++ -o .\debug2.out .\lab2.cpp
  */
 #ifdef NDEBUG
     std::cout << "Debug version 513.02.01.03\nDate: " << __DATE__ << "\nFile: " << __FILE__ << "\nFunction: " << __func__ << "\nLine: " << __LINE__ << std::endl;
@@ -416,7 +422,7 @@ int main()
      */
 
     {
-        char *det_char = "Hello Vitalya";
+        const char *det_char = "Hello Vitalya";
         char c = det_char[4];
         // *det_char = 'x'; вызовет ошибку, тк строка неизменяемая
     }
@@ -451,7 +457,7 @@ int main()
         /** Объясните результат выполнения операции вычитания двух указателей */
         pd1 = &dAr[0];
         pd2 = &dAr[1];
-        int nNumber = pd2 - pd1; // 1. (адрес2 - адрес1) / sizeof(int)
+        int nNumber = pd2 - pd1; // 1. (адрес2 - адрес1) / sizeof(double)
 
         /**
          * Сравните указатели pd2 и pd1 и с помощью cout выведите результаты
