@@ -56,7 +56,8 @@ int main()
             }
             cout << "-------" << endl;
         }
-        cout << endl << "------------------------------------" << endl
+        cout << endl
+             << "------------------------------------" << endl
              << endl;
 #endif
     }
@@ -93,7 +94,8 @@ int main()
             }
             cout << "-------" << endl;
         }
-        cout << endl << "------------------------------------" << endl
+        cout << endl
+             << "------------------------------------" << endl
              << endl;
 #endif
     }
@@ -127,7 +129,8 @@ int main()
         }
 #ifdef DEBUG_VERSION
         cout << "Sum in task 1.3: " << sum << endl;
-        cout << endl << "------------------------------------" << endl
+        cout << endl
+             << "------------------------------------" << endl
              << endl;
 #endif
     }
@@ -170,7 +173,8 @@ int main()
             cout << "-------" << endl;
         }
 
-        cout << endl << "------------------------------------" << endl
+        cout << endl
+             << "------------------------------------" << endl
              << endl;
 #endif
     }
@@ -214,7 +218,8 @@ int main()
 
         cout << "Размер two_dim_array: " << sizeof(two_dim_array) << " байт" << endl; // 30 байт (3 по 10)
         cout << "Размер p_array: " << sizeof(p_array) << " байт" << endl;             // 24 байт (3 указателя по 8 байт)
-        cout << endl << "------------------------------------" << endl
+        cout << endl
+             << "------------------------------------" << endl
              << endl;
 #endif
     }
@@ -259,7 +264,11 @@ int main()
         cin >> N;
         cout << "Введите количество столбцов M: ";
         cin >> M;
-
+        if (N <= 0 || M <= 0)
+        {
+            cout << "Ошибка: размерности должны быть положительными числами!" << endl;
+            return 1;
+        }
         int **array = new int *[N];
         for (int i = 0; i < N; i++)
         {
@@ -288,7 +297,8 @@ int main()
             }
 
             cout << "Сумма всех элементов массива: " << sum << endl;
-            cout << endl << "------------------------------------" << endl
+            cout << endl
+                 << "------------------------------------" << endl
                  << endl;
         }
 
@@ -324,7 +334,8 @@ int main()
             }
             cout << endl;
         }
-        cout << endl << "------------------------------------" << endl
+        cout << endl
+             << "------------------------------------" << endl
              << endl;
 #endif
         /**
@@ -353,7 +364,8 @@ int main()
             cout << one_dim_array[i] << endl;
         }
 
-        cout << endl << "------------------------------------" << endl
+        cout << endl
+             << "------------------------------------" << endl
              << endl;
 #endif
         /**
@@ -393,6 +405,39 @@ int main()
      * Постарайтесь, чтобы и сравнений, и перестановок было не больше, чем
      * k*N^2, где k - некоторое число.
      */
+    printf("3.1 Массив средних: \n");
+    int N, size = 0;
+    cout << "Введите количество целых чисел N: ";
+    cin >> N;
+    int *array = new int[N];
+    cout << "Введите количество целых чисел N: ";
+    if (N <= 0)
+    {
+        cout << "Ошибка: размерность должна быть положительным числом!" << endl;
+        return 1;
+    }
+    for (int i = 0; i < N; i++)
+    {
+        int num, pos = 0;
+        cin >> num;
+        for (; pos < size && num > array[pos]; pos++)
+            ;
+
+        for (int j = size; j > pos; j--)
+        {
+            array[j] = array[j - 1];
+        }
+
+        array[pos] = num;
+        size++;
+
+        cout << "Текущий массив: ";
+        for (int k = 0; k < size; k++)
+        {
+            cout << array[k] << " ";
+        }
+        cout << endl;
+    }
 
     /**
      * Задание 3.2. Простой поиск.
