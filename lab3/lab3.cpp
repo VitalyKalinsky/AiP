@@ -405,38 +405,40 @@ int main()
      * Постарайтесь, чтобы и сравнений, и перестановок было не больше, чем
      * k*N^2, где k - некоторое число.
      */
-    printf("3.1 Массив средних: \n");
-    int N, size = 0;
-    cout << "Введите количество целых чисел N: ";
-    cin >> N;
-    int *array = new int[N];
-    cout << "Введите количество целых чисел N: ";
-    if (N <= 0)
     {
-        cout << "Ошибка: размерность должна быть положительным числом!" << endl;
-        return 1;
-    }
-    for (int i = 0; i < N; i++)
-    {
-        int num, pos = 0;
-        cin >> num;
-        for (; pos < size && num > array[pos]; pos++)
-            ;
-
-        for (int j = size; j > pos; j--)
+        printf("3.1: \n");
+        int N, size = 0;
+        cout << "Введите количество целых чисел N: ";
+        cin >> N;
+        int *array = new int[N];
+        if (N <= 0)
         {
-            array[j] = array[j - 1];
+            cout << "Ошибка: размерность должна быть положительным числом!" << endl;
+            return 1;
         }
-
-        array[pos] = num;
-        size++;
-
-        cout << "Текущий массив: ";
-        for (int k = 0; k < size; k++)
+        for (int i = 0; i < N; i++)
         {
-            cout << array[k] << " ";
+            int num, pos = 0;
+            cin >> num;
+            for (; pos < size && num > array[pos]; pos++)
+                ;
+
+            for (int j = size; j > pos; j--)
+            {
+                array[j] = array[j - 1];
+            }
+
+            array[pos] = num;
+            size++;
+
+            cout << "Текущий массив: ";
+            for (int k = 0; k < size; k++)
+            {
+                cout << array[k] << " ";
+            }
+            cout << endl;
         }
-        cout << endl;
+        // число сравнений ~N^2, сравнений примерно столько же (можно уменьшить, написав бинарный поиск (реазиловал в 3.2 для поиска дублей))
     }
 
     /**
@@ -446,7 +448,74 @@ int main()
      * вводится в массив только при условии, что там еще такого нет (то есть
      * дубли игнорируются).
      */
+    {
+        printf("3.2: \n");
+        int N, size = 0;
+        cout << "Введите количество целых чисел N: ";
+        cin >> N;
+        int *array = new int[N];
+        if (N <= 0)
+        {
+            cout << "Ошибка: размерность должна быть положительным числом!" << endl;
+            return 1;
+        }
+        for (int i = 0; i < N; i++)
+        {
+            int num, pos = 0;
+            bool flag = false;
+            do
+            {
+                flag = false;
+                cout << "Введите число: ";
+                cin >> num;
+                int left = 0, right = size - 1, mid;
+                while (left <= right)
+                {
+                    mid = (left + right) / 2;
+                    if (array[mid] == num)
+                    {
+                        flag = true;
+                        cout << "Такое число уже есть!" << endl;
+                        cout << "Текущий массив: ";
+                        for (int k = 0; k < size; k++)
+                        {
+                            cout << array[k] << " ";
+                        }
+                        cout << endl;
+                        break;
+                        ;
+                    }
+                    else if (num < array[mid])
+                    {
+                        right = mid - 1;
+                    }
+                    else
+                    {
+                        left = mid + 1;
+                    }
+                }
+            } while (flag);
 
+            for (; pos < size && num > array[pos]; pos++)
+                ;
+
+            for (int j = size; j > pos; j--)
+            {
+                array[j] = array[j - 1];
+            }
+
+            array[pos] = num;
+            size++;
+
+            cout << "Текущий массив: ";
+            for (int k = 0; k < size; k++)
+            {
+                cout << array[k] << " ";
+            }
+            cout << endl;
+        }
+        // бинарный поиск log(n) операций
+    }
     /**
      * Задание 4. Сортировка строк.
      *
