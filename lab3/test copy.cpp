@@ -4,36 +4,7 @@
 using namespace std;
 
 int main(int argc, char const *argv[])
-{ /**
-   * Задание 6. Работа со строками.
-   *
-   * Реализуйте следующую программу. Пользователь вводит строку (любого
-   * размера), после чего пользователю выводится на консоль следующее
-   * изображение, где его ввод помещен в "speech bubble":
-   *
-   *  _____________________________________
-   * / Here user input is shown. This line \
-   * \ must be at most 40 characters long. /
-   *  ------------------------------------
-   *     \
-   *      \
-   *        /\_/\  (
-   *       ( ^.^ ) _)
-   *         \"/  (
-   *       ( | | )
-   *      (__d b__)
-   *
-   *  При этом длина строки в "облачке" должна быть не более 40 символов, при
-   *  этом слова должны переноситься аккуратно. Это означет, что не должно
-   *  быть переносов в центре слова (если только это слово не больше 40
-   *  символов).
-   *
-   *  Дизайн облачка и ASCII-арт допустимо поменять по усмотрению.
-   *
-   *  Подсказка: обратите внимание на конкатенацию строковых литералов в
-   *  языке С, это позволит задавать подобные рисунки так, чтобы они
-   *  адекватно выглядели в коде.
-   */
+{
     {
 #define MAX_WORDS 1024
 #define MAX_LINE_LENGTH 40
@@ -44,7 +15,7 @@ int main(int argc, char const *argv[])
         char c = getchar();
         int cur_pos = 0;
 
-        char **words = new char *[MAX_WORDS];
+        char **words = new char *[MAX_WORDS]();
         int word_count = 0;
         int word_start = -1;
 
@@ -63,7 +34,7 @@ int main(int argc, char const *argv[])
             }
 
             cString[cur_pos] = c;
-            if (c == ' ' or c == '\n')
+            if (c == ' ' || c == '\n')
             {
                 if (word_start != -1)
                 {
@@ -94,24 +65,48 @@ int main(int argc, char const *argv[])
             c = getchar();
         }
 
-        char **lines = new char *[word_count]();
-        for (int i = 0; i < word_count + 1; i++)
+        char **lines = new char *[MAX_WORDS]();
+        for (int i = 0; i < MAX_WORDS; i++)
         {
-            lines[i] = new char[MAX_LINE_LENGTH + 1](); // Initialize with zeros
+            lines[i] = nullptr;
         }
+
+        lines[0] = new char[MAX_LINE_LENGTH + 1]();
+        strcpy(lines[0], "");
+
         int potential_length = 0;
         int cur_line = 0;
         int max_len = 0;
-        //todo for 40-digit word 
         for (int i = 0; i < word_count; i++)
         {
             potential_length = (strlen(lines[cur_line]) + strlen(words[i]) + 1);
-            if (potential_length > 40)
+            if (strlen(words[i]) > MAX_LINE_LENGTH)
+            {
+                max_len = MAX_LINE_LENGTH;
+
+                if (strlen(lines[cur_line]) > 0)
+                {
+                    cur_line++;
+                    lines[cur_line] = new char[MAX_LINE_LENGTH + 1]();
+                }
+
+                strncpy(lines[cur_line], words[i], MAX_LINE_LENGTH);
+                lines[cur_line][MAX_LINE_LENGTH] = '\0';
+
+                cur_line++;
+                lines[cur_line] = new char[MAX_LINE_LENGTH + 1]();
+                strcpy(lines[cur_line], words[i] + MAX_LINE_LENGTH);
+
+                potential_length = strlen(lines[cur_line]);
+            }
+            else if (potential_length > MAX_LINE_LENGTH)
             {
                 int cur_length = potential_length - (strlen(words[i]) + 1);
                 cur_line++;
-                lines[cur_line] = words[i];
-                if(cur_length > max_len){
+                lines[cur_line] = new char[MAX_LINE_LENGTH + 1]();
+                strcpy(lines[cur_line], words[i]);
+                if (cur_length > max_len)
+                {
                     max_len = cur_length;
                 }
                 potential_length = strlen(words[i]);
@@ -120,35 +115,129 @@ int main(int argc, char const *argv[])
             {
                 if (potential_length == (strlen(words[i]) + 1))
                 {
-                    lines[cur_line] = words[i];
+                    strcpy(lines[cur_line], words[i]);
                 }
                 else
                 {
-                    lines[cur_line] = strcat(strcat(lines[cur_line], " "), words[i]);
+                    strcat(lines[cur_line], " ");
+                    strcat(lines[cur_line], words[i]);
                 }
             }
         }
+        if (cur_line == 0)
+        {
+            max_len = strlen(lines[cur_line]);
+        }
         cout << " ";
-        for (int i = 0; i < max_len; i++)
+        for (int i = 0; i < max_len + 2; i++)
         {
             cout << "_";
         }
         cout << endl;
-        
-        //1 line
-        if (cur_line == 1){
-            cout << "|" " " << endl;
-        }
-        
-        //2+ lines
 
-        // Очистка памяти
+        // 1 line
+        if (cur_line == 0)
+        {
+            cout << "|"
+                    " "
+                 << lines[cur_line] << " "
+                                       "|"
+                 << endl;
+        }
+        else
+        { // 2+ lines
+            for (int i = 0; i <= cur_line; i++)
+            {
+                if (i == 0)
+                {
+                    cout << "/"
+                            " "
+                         << lines[i];
+                    for (int j = 0; j < (max_len + 1) - strlen(lines[i]); j++)
+                    {
+                        cout << " ";
+                    }
+                    cout << "\\" << endl;
+                }
+                else if (i == cur_line)
+                {
+                    cout << "\\"
+                            " "
+                         << lines[i];
+                    for (int j = 0; j < (max_len + 1) - strlen(lines[i]); j++)
+                    {
+                        cout << " ";
+                    }
+                    cout << "/" << endl;
+                }
+                else
+                {
+                    cout << "|"
+                            " "
+                         << lines[i];
+                    for (int j = 0; j < (max_len + 1) - strlen(lines[i]); j++)
+                    {
+                        cout << " ";
+                    }
+                    cout << "|" << endl;
+                }
+            }
+        }
+        cout << " ";
+        for (int i = 0; i < max_len + 2; i++)
+        {
+            cout << "-";
+        }
+        cout << endl;
+        cout << "     \\\n      \\\n        /\\_/\\  (\n       ( ^.^ ) _)\n         \\\"/  (\n       ( | | )\n      (__d b__)" << endl;
+        cout << endl
+             << "------------------------------------" << endl
+             << endl;
         delete[] cString;
+
         for (int i = 0; i < word_count; i++)
         {
             delete[] words[i];
         }
         delete[] words;
+
+        for (int i = 0; i <= cur_line; i++)
+        {
+            delete[] lines[i];
+        }
+        delete[] lines;
     }
-    // Here user input is shown. This line must be at most 40 characters long.
+    // Реализуйте следующую программу. Пользователь вводит строку (любого размера), после чего
+    //  Here user input is shown. This line must be at most 40 characters long. input i shasd ownat most
+    /**
+     * Задание 6. Работа со строками.
+     * aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbcccccccccccccccccccccccccccccccccccccccc
+     * aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb cccccccccccccccccccccccccccccccccccccccc
+     * Реализуйте следующую программу. Пользователь вводит строку (любого
+     * размера), после чего пользователю выводится на консоль следующее
+     * изображение, где его ввод помещен в "speech bubble":
+     *
+     *  _____________________________________
+     * / Here user input is shown. This line \
+     * \ must be at most 40 characters long. /
+     *  ------------------------------------
+     *     \
+     *      \
+     *        /\_/\  (
+     *       ( ^.^ ) _)
+     *         \"/  (
+     *       ( | | )
+     *      (__d b__)
+     *
+     *  При этом длина строки в "облачке" должна быть не более 40 символов, при
+     *  этом слова должны переноситься аккуратно. Это означет, что не должно
+     *  быть переносов в центре слова (если только это слово не больше 40
+     *  символов).
+     *
+     *  Дизайн облачка и ASCII-арт допустимо поменять по усмотрению.
+     *
+     *  Подсказка: обратите внимание на конкатенацию строковых литералов в
+     *  языке С, это позволит задавать подобные рисунки так, чтобы они
+     *  адекватно выглядели в коде.
+     */
 }
