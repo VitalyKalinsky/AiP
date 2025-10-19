@@ -409,16 +409,20 @@ int main()
         printf("3.1: \n");
         int N, size = 0;
         cout << "Введите количество целых чисел N: ";
+        cin.ignore();
         cin >> N;
         int *array = new int[N];
         if (N <= 0)
         {
             cout << "Ошибка: размерность должна быть положительным числом!" << endl;
+            delete[] array;
             return 1;
         }
         for (int i = 0; i < N; i++)
         {
             int num, pos = 0;
+            cin.ignore();
+            cout << "Введите целое число: ";
             cin >> num;
             for (; pos < size && num > array[pos]; pos++)
                 ;
@@ -438,7 +442,13 @@ int main()
             }
             cout << endl;
         }
+
+        delete[] array;
         // число сравнений ~N^2, сравнений примерно столько же (можно уменьшить, написав бинарный поиск (реазиловал в 3.2 для поиска дублей))
+
+        cout << endl
+             << "------------------------------------" << endl
+             << endl;
     }
 
     /**
@@ -452,6 +462,7 @@ int main()
         printf("3.2: \n");
         int N, size = 0;
         cout << "Введите количество целых чисел N: ";
+        cin.ignore();
         cin >> N;
         int *array = new int[N];
         if (N <= 0)
@@ -467,6 +478,7 @@ int main()
             {
                 flag = false;
                 cout << "Введите число: ";
+                cin.ignore();
                 cin >> num;
                 int left = 0, right = size - 1, mid;
                 while (left <= right)
@@ -514,7 +526,12 @@ int main()
             }
             cout << endl;
         }
+        delete[] array;
         // бинарный поиск log(n) операций
+
+        cout << endl
+             << "------------------------------------" << endl
+             << endl;
     }
     /**
      * Задание 4. Сортировка строк.
@@ -536,40 +553,52 @@ int main()
      */
 
     {
-        /** Определите необходимые значения как константы */
+        printf("4: \n");
+/** Определите необходимые значения как константы */
 
-        // STOP_STRING  -  "*"  //признак "прекратить ввод"
-        // M  -  80 //максимальный размер одной строки
-        // N  -  10 //максимальное количество строк в массиве
+// STOP_STRING  -  "*"  //признак "прекратить ввод"
+// M  -  80 //максимальный размер одной строки
+// N  -  10 //максимальное количество строк в массиве
+#define STOP_STRING "*" // признак "прекратить ввод"
+#define M 80            // максимальный размер одной строки
+#define N 10            // максимальное количество строк в массиве
 
         /**
          * Объявите двухмерный массив с именем cBuffer типа char и размерностью
          * N*M.
          */
 
+        char cBuffer[N][M];
         /**
          * Объявите массив (с именем cPointers) указателей на строки
          * размерностью N.
          */
-
+        char *cPointers[N];
         /**
          * Цикл ввода строк:
          * 1. выведите приглашение для ввода;
          * 2. пока не введена строка STOP_STRING или не заполнен весь массив;
          */
-
+        int nIndex;
+        for (nIndex = 0; nIndex < N; nIndex++)
         {
             /** ввод строки в массив cBuffer: */
-
+            cout << "Строка " << nIndex + 1 << ": ";
+            cin.ignore();
+            cin >> cBuffer[nIndex];
             /** если введена строка - признак окончания, то выйти из цикла */
+            if (strcmp(cBuffer[nIndex], STOP_STRING) == 0)
+            {
+                break;
+            }
 
             /** Присвойте элементу массива cPointers с индексом nIndex */
-
             /** указатель на строку с номером nIndex в массиве cBuffer */
+            cPointers[nIndex] = cBuffer[nIndex];
         }
 
         /** Выдать диагностику о том, что прием строк завершен.*/
-
+        cout << "\nПрием строк завершен. Введено строк: " << nIndex << endl;
         /**
          * Теперь сортируем строки.
          *
@@ -578,6 +607,30 @@ int main()
          *
          * На каждой итерации - промежуточная печать отсортированных строк.
          */
+        for (int i = 0; i < nIndex - 1; i++) //[5, 3, 8, 1, 2]
+        {
+            cout << "Итерация " << i + 1 << ":\n";
+
+            for (int j = 0; j < nIndex - 1 - i; j++)
+            {
+                if (strcmp(cPointers[j], cPointers[j + 1]) > 0)
+                {
+                    char *temp = cPointers[j];
+                    cPointers[j] = cPointers[j + 1];
+                    cPointers[j + 1] = temp;
+                }
+            }
+
+            for (int k = 0; k < nIndex; k++)
+            {
+                cout << cPointers[k] << endl;
+            }
+            cout << endl;
+        }
+
+        cout << endl
+             << "------------------------------------" << endl
+             << endl;
     }
 
     /*
@@ -598,18 +651,84 @@ int main()
          */
 
     {
+
+        printf("5: \n");
         int nStringNumber;
-
+        cout << "Введите количество строчек: ";
+        cin >> nStringNumber;
+        cin.ignore();
+        char **cStringsArr = new char *[nStringNumber]();
+#define STOP_STRING "*"
         /** Цикл ввода строк: */
-
+        for (int i = 0; i < nStringNumber; i++)
+        {
+            int cur_size = 10;
+            char *cString = new char[cur_size]();
+            cout << "Введите строку:";
+            char c = cin.get();
+            int cur_pos = 0;
+            while (c != '\n')
+            {
+                if (cur_pos >= cur_size - 1) // не >, тк тогда не вместится \0 и будет переполнение, не получится вписать (*)
+                {
+                    char *new_cString = new char[cur_size * 2]();
+                    for (int i = 0; i < cur_size; i++)
+                    {
+                        new_cString[i] = cString[i];
+                    }
+                    delete[] cString;
+                    cString = new_cString;
+                    cur_size *= 2;
+                }
+                cString[cur_pos] = c;
+                cur_pos++;
+                c = cin.get();
+            }
+            cString[cur_pos] = '\0'; //(*) завершаем строку
+            if (strcmp(cString, STOP_STRING) == 0)
+            {
+                nStringNumber = i;
+                delete[] cString;
+                break;
+            }
+            cStringsArr[i] = new char[strlen(cString) + 1];
+            strcpy(cStringsArr[i], cString);
+            delete[] cString;
+        }
         /**
          * Цикл сортировки строк по методу "всплывающего пузырька" в порядке
          * возрастания кода первого символа.
          */
-
+        for (int i = 0; i < nStringNumber - 1; i++)
+        {
+            for (int j = 0; j < nStringNumber - 1 - i; j++)
+            {
+                if (strcmp(cStringsArr[j], cStringsArr[j + 1]) > 0)
+                {
+                    char *temp = cStringsArr[j];
+                    cStringsArr[j] = cStringsArr[j + 1];
+                    cStringsArr[j + 1] = temp;
+                }
+            }
+        }
+#ifdef DEBUG_VERSION
+        for (int k = 0; k < nStringNumber; k++)
+        {
+            cout << cStringsArr[k] << endl;
+        }
+        cout << endl;
+#endif
         /** Освобождение занятой памяти */
-    }
+        for (int i = 0; i < nStringNumber; i++)
+        {
+            delete[] cStringsArr[i];
+        }
+        delete[] cStringsArr;
 
+        cout << endl
+             << "------------------------------------" << endl
+             << endl;
+    }
     /**
      * Задание 6. Работа со строками.
      *
