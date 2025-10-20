@@ -308,18 +308,18 @@ int main()
          * В сформированном массиве отсортируйте каждую строку по убыванию
          * значений. Используйте сортировку "выбором".
          */
-        for (int row = 0; row < N; row++)
+        for (int row = 0; row < N; row++) //8 4 6 1 2
         {
             for (int i = M - 1; i > 0; i--)
             {
-                int max = i;
+                int min = i;
                 for (int j = i; j > -1; j--)
                 {
-                    if (array[row][j] < array[row][max])
-                        max = j;
+                    if (array[row][j] < array[row][min])
+                        min = j;
                 }
-                int tmp = array[row][max];
-                array[row][max] = array[row][i];
+                int tmp = array[row][min];
+                array[row][min] = array[row][i];
                 array[row][i] = tmp;
             }
         }
@@ -444,7 +444,7 @@ int main()
         }
 
         delete[] array;
-        // число сравнений ~N^2, сравнений примерно столько же (можно уменьшить, написав бинарный поиск (реазиловал в 3.2 для поиска дублей))
+        // число сравнений ~N^2, перестановок примерно столько же (можно уменьшить, написав бинарный поиск (реазиловал в 3.2 для поиска дублей))
 
         cout << endl
              << "------------------------------------" << endl
@@ -585,7 +585,7 @@ int main()
             /** ввод строки в массив cBuffer: */
             cout << "Строка " << nIndex + 1 << ": ";
             cin.ignore();
-            cin >> cBuffer[nIndex];
+            cin.getline(cBuffer[nIndex], M);
             /** если введена строка - признак окончания, то выйти из цикла */
             if (strcmp(cBuffer[nIndex], STOP_STRING) == 0)
             {
@@ -669,6 +669,7 @@ int main()
             int cur_pos = 0;
             while (c != '\n')
             {
+                // расширение массива
                 if (cur_pos >= cur_size - 1) // не >, тк тогда не вместится \0 и будет переполнение, не получится вписать (*)
                 {
                     char *new_cString = new char[cur_size * 2]();
@@ -680,17 +681,22 @@ int main()
                     cString = new_cString;
                     cur_size *= 2;
                 }
+
                 cString[cur_pos] = c;
                 cur_pos++;
                 c = cin.get();
             }
+
             cString[cur_pos] = '\0'; //(*) завершаем строку
+
             if (strcmp(cString, STOP_STRING) == 0)
             {
                 nStringNumber = i;
                 delete[] cString;
                 break;
             }
+
+            // копируем строчку в массив строчек
             cStringsArr[i] = new char[strlen(cString) + 1];
             strcpy(cStringsArr[i], cString);
             delete[] cString;
@@ -759,7 +765,7 @@ int main()
      *  языке С, это позволит задавать подобные рисунки так, чтобы они
      *  адекватно выглядели в коде.
      */
-    
+
     {
 #define MAX_WORDS 1024
 #define MAX_LINE_LENGTH 40
@@ -776,6 +782,7 @@ int main()
 
         while (true)
         {
+            // расширяем массив
             if (cur_pos >= cur_size - 1)
             {
                 char *new_cString = new char[cur_size * 2]();
@@ -789,6 +796,8 @@ int main()
             }
 
             cString[cur_pos] = c;
+
+            // разбиение на слова
             if (c == ' ' || c == '\n')
             {
                 if (word_start != -1)
@@ -845,9 +854,11 @@ int main()
                     lines[cur_line] = new char[MAX_LINE_LENGTH + 1]();
                 }
 
+                // на новую строчку
                 strncpy(lines[cur_line], words[i], MAX_LINE_LENGTH);
                 lines[cur_line][MAX_LINE_LENGTH] = '\0';
 
+                // остаток на следующую
                 cur_line++;
                 lines[cur_line] = new char[MAX_LINE_LENGTH + 1]();
                 strcpy(lines[cur_line], words[i] + MAX_LINE_LENGTH);
@@ -856,10 +867,12 @@ int main()
             }
             else if (potential_length > MAX_LINE_LENGTH)
             {
+                // перенос
                 int cur_length = potential_length - (strlen(words[i]) + 1);
                 cur_line++;
                 lines[cur_line] = new char[MAX_LINE_LENGTH + 1]();
                 strcpy(lines[cur_line], words[i]);
+                // для вывода строк в облачке
                 if (cur_length > max_len)
                 {
                     max_len = cur_length;
@@ -879,6 +892,7 @@ int main()
                 }
             }
         }
+
         if (cur_line == 0)
         {
             max_len = strlen(lines[cur_line]);
@@ -899,6 +913,7 @@ int main()
                                        "|"
                  << endl;
         }
+
         else
         { // 2+ lines
             for (int i = 0; i <= cur_line; i++)
@@ -997,8 +1012,25 @@ int main()
      */
 
     {
-
-        // for(int i=0; i<...; ...)
+        double (*dArray[4])[3] = {
+            new double[3][3]{{1, 1, 1}, {1, 1, 1}, {1, 1, 1}},  
+            new double[3][3]{{2, 2, 2}, {2, 2, 2}, {2, 2, 2}},
+            new double[3][3]{{3, 3, 3}, {3, 3, 3}, {3, 3, 3}},
+            new double[3][3]{{4, 4, 4}, {4, 4, 4}, {4, 4, 4}}};
+        for (int i = 0; i < 4; i++)
+        {
+            for (int j = 0; j < 3; j++)
+            {
+                for (int k = 0; k < 3; k++)
+                {
+                    std::cout << dArray[i][j][k] << "  ";
+                }
+                std::cout << endl;
+            }
+            std::cout << endl;
+        }
+        std::cout << "--------" << endl;
+        for (int i = 0; i < 4; i += 2)
         {
 
             /**
@@ -1008,9 +1040,25 @@ int main()
 
             // ... =  dArray[i];
             // ... =  dArray[i+1];
-
+            double (*tmp)[3] = dArray[i];
+            dArray[i] = dArray[i + 1];
             /** переставляем местами элементы i-того и i+1-ого слоев */
+            dArray[i + 1] = tmp;
         }
+        for (int i = 0; i < 4; i++)
+        {
+            for (int j = 0; j < 3; j++)
+            {
+                for (int k = 0; k < 3; k++)
+                {
+                    std::cout << dArray[i][j][k] << "  ";
+                }
+                std::cout << endl;
+            }
+            std::cout << endl;
+            delete[] dArray[i];
+        }
+        std::cout << endl;
     }
 
     /**
@@ -1038,6 +1086,53 @@ int main()
      */
 
     {
+        srand(time(0));
+#define ROWS 5
+#define COLS 5
+        char m[ROWS][COLS];
+        for (int i = 0; i < ROWS; i++)
+        {
+            for (int j = 0; j < COLS; j++)
+            {
+                m[i][j] = (rand() % 2) ? '*' : '_';
+                cout << m[i][j] << ' ';
+            }
+            cout << endl;
+        }
+
+        for (int i = 0; i < ROWS; i++)
+        {
+            int starCount = 0;
+            for (int j = 0; j < COLS; j++)
+            {
+                if (m[i][j] == '*')
+                {
+                    starCount++;
+                }
+            }
+
+            for (int j = 0; j < COLS; j++)
+            {
+                if (starCount > 0)
+                {
+                    m[i][j] = '*';
+                    starCount--;
+                }
+                else
+                {
+                    m[i][j] = '_';
+                }
+            }
+        }
+        cout << endl;
+        for (int i = 0; i < ROWS; i++)
+        {
+            for (int j = 0; j < COLS; j++)
+            {
+                cout << m[i][j] << ' ';
+            }
+            cout << endl;
+        }
     }
 
     /**
@@ -1049,6 +1144,52 @@ int main()
      */
 
     {
+        
+        srand(time(nullptr));
+        char m[ROWS][COLS];
+        for (int i = 0; i < ROWS; i++)
+        {
+            for (int j = 0; j < COLS; j++)
+            {
+                m[i][j] = (rand() % 2) ? '*' : '_';
+                cout << m[i][j] << ' ';
+            }
+            cout << endl;
+        }
+
+        for (int col = 0; col < COLS; col++)
+        {
+            int underscoreCount = 0;
+            for (int row = 0; row < ROWS; row++)
+            {
+                if (m[row][col] == '_')
+                {
+                    underscoreCount++;
+                }
+            }
+
+            for (int row = 0; row < ROWS; row++)
+            {
+                if (underscoreCount > 0)
+                {
+                    m[row][col] = '_';
+                    underscoreCount--;
+                }
+                else
+                {
+                    m[row][col] = '*';
+                }
+            }
+        }
+        cout << endl;
+        for (int i = 0; i < ROWS; i++)
+        {
+            for (int j = 0; j < COLS; j++)
+            {
+                cout << m[i][j] << ' ';
+            }
+            cout << endl;
+        }
     }
 
     return 0;
