@@ -4,10 +4,9 @@
  */
 #include <iostream>
 // #include <cstdio>
-// #include <cstdarg>
+#include <cstdarg>
 
 #include "other.h"
-
 using namespace std;
 int main()
 {
@@ -81,7 +80,7 @@ int main()
          * функций на единицу.
          */
         int val = 1;
-        inc_by_value(val);
+        val = inc_by_value(val);
         cout << "После inc_by_value(): val = " << val << endl;
 
         inc_by_pointer(&val);
@@ -111,7 +110,7 @@ int main()
         /** поменяли местами значения nX и nY с помощью указателей на nX и nY */
         swap(&nX, &nY);
         cout << "После swap через указатели: nX = " << nX << ", nY = " << nY << endl;
-        
+
         /** а теперь обратно с помощью ссылок на nX и nY */
         swap(nX, nY);
         cout << "После swap через ссылки: nX = " << nX << ", nY = " << nY << endl;
@@ -137,10 +136,44 @@ int main()
     {
         /** Задайте массивы для проверки и проверьте результат работы функции */
 
+        const int arr1D[] = {5, 2, 8, -1, 7, 3};
+        const int size1D = sizeof(arr1D) / sizeof(arr1D[0]);
+        cout << "Минимум в одномерном массиве ";
+        print_array(arr1D, size1D);
+        cout << ": " << find_Min_1D(arr1D, size1D) << endl;
+
+        const int rows = 4;
+        const int cols = 5;
+        int **arr2D = new int *[rows];
+        for (int i = 0; i < rows; i++)
+        {
+            arr2D[i] = new int[cols];
+            for (int j = 0; j < cols; j++)
+            {
+                arr2D[i][j] = i * cols + j + 1;
+            }
+        }
+        arr2D[1][2] = -10;
+        cout << "Минимум в двумерном массиве ";
+        print_2D_array(const_cast<const int **>(arr2D), rows, cols);
+        cout << ": " << find_Min_2D(const_cast<const int **>(arr2D), rows, cols) << endl;
         /**
          * Покажите, как можно использовать эту функцию для встроенных
          * двумерных массивов.
          */
+        const int staticArr[rows][cols] = {
+            {1, 2, 3, 4, 5},
+            {6, 7, -10, 9, 10},
+            {11, 12, 13, 14, 15},
+            {16, 17, 18, 19, 20}};
+        cout << "Минимум во встроенном массиве ";
+        print_array(reinterpret_cast<const int *>(staticArr), rows * cols);
+        cout << ": " << find_Min_1D(reinterpret_cast<const int *>(staticArr), rows * cols) << endl;
+        for (int i = 0; i < rows; i++)
+        {
+            delete[] arr2D[i];
+        }
+        delete[] arr2D;
     }
 
     /**
@@ -159,10 +192,12 @@ int main()
 
     {
         /** Создайте две строки для сравнения */
-
+        const char *str1 = "vitalya";
+        const char *str2 = "vitalik";
         /** Вызовите функцию сравнения */
-
+        const int out = my_Str_Cmp(str1, str2);
         /** Выведите результат сравнения с помощью cout */
+        cout << str1 << " vs " << str2 << ": " << out << endl;
     }
 
     /**
@@ -203,6 +238,16 @@ int main()
      * Соберите вашу программу для релиза (с директивой NDEBUG) и выполните код
      * с некорректными значениям. Объясните полученные результаты.
      */
+    const int arr1D[] = {5, 2, 8, -1, 7, 3};
+    const int size1D = -1;
+    cout << "СЛОМАННЫЙ КОД";
+    print_array(arr1D, size1D);
+    cout << ": " << find_Min_1D(arr1D, size1D) << endl;
+    // NDEBUG отключает отладлочные макросы и функции, поэтому assert не работает.
+    //  СЛОМАННЫЙ КОД{: 5
+    //  если его не ставить, будет
+    //  lab4.exe: other.cpp:37: int findMin1D(const int*, int): Assertion `arr != nullptr && size > 0' failed.
+    //  Aborted (core dumped)
 
     /**
      * Задание 4. Ссылки в качестве параметров. Передача указателя на
@@ -236,8 +281,15 @@ int main()
             {31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31}}; // високосный год
 
         /** Вызов функции DayOfYear */
-
+        const int day = 24, month = 3, year = 2007;
+        int dayOfYear = day_of_year(day, month, year, nDayTab);
+        cout << "day_of_year: " << dayOfYear << endl;
         /** Проверка результата обратной функцией DayOfMonth */
+
+        int dayOfMonth_day, dayOfMonth_month;
+        day_of_month(dayOfYear, year, dayOfMonth_day, dayOfMonth_month, nDayTab);
+
+        cout << "day_of_month: " << dayOfMonth_month << "." << dayOfMonth_day << endl;
     }
 
     /**
@@ -255,31 +307,37 @@ int main()
      */
 
     {
-        int n;    // сформируйте значение n
-        int *arr; // создайте тут массив размера n
+        srand(time(0));
+        int n = 10;            // сформируйте значение n
+        int *arr = new int[n]; // создайте тут массив размера n
 
         /** заполнение случайными значениями */
         for (int i = 0; i < n; ++i)
         {
-            // arr[i] = ...;
+            arr[i] = rand() % 10;
         }
 
+        print_array(arr, n);
+        cout << endl;
         for (int i = 0; i < 100; ++i)
         {
             int new_value;
-            // new_value = ...; // случайное значение
+            new_value = rand() % 10; // случайное значение
             new_value = new_value % 10;
             /** вызов функции добавления в массив */
-            // add_unique(arr, ..., new_value);
+            arr = add_unique(arr, n, new_value);
         }
 
         /** печать массива на экран */
-        // print_array(arr, ...)
+        print_array(arr, n);
+        cout << endl;
 
         /**
          * Тут должно быть не более 10 + n элементов, так как во втором цикле
          * могут быть получены только 10 разных вариантов.
          */
+
+        delete[] arr;
     }
 
     /**
@@ -288,6 +346,11 @@ int main()
      * Напишите рекурсивную функцию вычисления суммы первых N натуральных
      * чисел.
      */
+
+    {
+        int N = 4;
+        cout << "сумма первых " << N << " натуральных чисел: " << sum_of_natural_numbers(N) << endl;
+    }
 
     /**
      * Задание 7. Кодирование-декодирование информации. Обработка ошибок.
@@ -353,9 +416,12 @@ int main()
      */
     {
         int nN1 = 5, nN2 = 11, nN3 = 4, nN4 = 7, nN5 = -1;
-        // var_args(nN1, 0);
-        // var_args(nN1, nN2, 0);
-        // var_args(nN1, nN2, nN3, nN4, nN5, 0);
+        var_args(nN1, 0);
+        cout << "----------" << endl;
+        var_args(nN1, nN2, 0);
+        cout << "----------" << endl;
+        var_args(nN1, nN2, nN3, nN4, nN5, 0);
+        cout << "----------" << endl;
     }
 
     /**
@@ -367,10 +433,13 @@ int main()
      */
 
     {
+#define VAR_ARGS(...) (var_args(__VA_ARGS__, 0))
         int nN1 = 5, nN2 = 11, nN3 = 4, nN4 = 7, nN5 = -1;
-        // VAR_ARGS(nN1);
-        // VAR_ARGS(nN1, nN2);
-        // VAR_ARGS(nN1, nN2, nN3, nN4, nN5);
+        VAR_ARGS(nN1);
+        cout << "----------" << endl;
+        VAR_ARGS(nN1, nN2);
+        cout << "----------" << endl;
+        VAR_ARGS(nN1, nN2, nN3, nN4, nN5);
     }
 
     /**
@@ -382,6 +451,13 @@ int main()
      *
      * `*my_min(параметры) = 0;`
      */
+    {
+        int arr1D[] = {5, 2, 8, -1, 7, 3};
+        const int size = sizeof(arr1D) / sizeof(arr1D[0]);
+        *my_min(arr1D, size) = 1234567;
+        print_array(arr1D, size);
+        cout << endl;
+    }
 
     return 0;
 }
