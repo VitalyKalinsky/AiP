@@ -88,6 +88,8 @@ int main()
 
         inc_by_reference(val);
         cout << "После inc_by_reference(): val = " << val << endl;
+
+        cout << "----------" << endl;
     }
 
     /**
@@ -114,6 +116,8 @@ int main()
         /** а теперь обратно с помощью ссылок на nX и nY */
         swap(nX, nY);
         cout << "После swap через ссылки: nX = " << nX << ", nY = " << nY << endl;
+
+        cout << "----------" << endl;
     }
 
     /**
@@ -174,6 +178,8 @@ int main()
             delete[] arr2D[i];
         }
         delete[] arr2D;
+
+        cout << "----------" << endl;
     }
 
     /**
@@ -198,6 +204,8 @@ int main()
         const int out = my_Str_Cmp(str1, str2);
         /** Выведите результат сравнения с помощью cout */
         cout << str1 << " vs " << str2 << ": " << out << endl;
+
+        cout << "----------" << endl;
     }
 
     /**
@@ -243,6 +251,8 @@ int main()
     cout << "СЛОМАННЫЙ КОД";
     print_array(arr1D, size1D);
     cout << ": " << find_Min_1D(arr1D, size1D) << endl;
+
+    cout << "----------" << endl;
     // NDEBUG отключает отладлочные макросы и функции, поэтому assert не работает.
     //  СЛОМАННЫЙ КОД{: 5
     //  если его не ставить, будет
@@ -290,6 +300,8 @@ int main()
         day_of_month(dayOfYear, year, dayOfMonth_day, dayOfMonth_month, nDayTab);
 
         cout << "day_of_month: " << dayOfMonth_month << "." << dayOfMonth_day << endl;
+        
+        cout << "----------" << endl;
     }
 
     /**
@@ -338,6 +350,8 @@ int main()
          */
 
         delete[] arr;
+        
+        cout << "----------" << endl;
     }
 
     /**
@@ -350,6 +364,8 @@ int main()
     {
         int N = 4;
         cout << "сумма первых " << N << " натуральных чисел: " << sum_of_natural_numbers(N) << endl;
+        
+        cout << "----------" << endl;
     }
 
     /**
@@ -363,12 +379,13 @@ int main()
      * переводится в целое число от 0 до 31 и по этому индексу выбирается
      * символ в таблице.
      *
-     * Например, два байта 0x1E47 будут закодированы так:
+     * Например, два байта 0x1E47 = 30, 71 будут закодированы так:
      *
      * 1. запишем в двоичном виде и разделим на пятерки (дополнив нулями):
      *    0001 1110 0100 0111 -> 00011 11001 00011 10000
      * 2. каждую пятерку переведем в число:
      *    00011 11001 00011 10000 -> 3 25 3 16
+     *    00000011 00011001 00000011 00010000
      * 3. Для каждого числа подставим символ из таблицы:
      *    3 25 3 16 -> DZDQ
      *
@@ -399,7 +416,37 @@ int main()
      * после чего декодируйте их. Декодированные строки должны совпадать с
      * изначальными.
      */
+    {
+        char raw_data[] = {0x1e, 0x47};
+        int raw_data_size = sizeof(raw_data) / sizeof(raw_data[0]);
+        int enc32_size = encoded32_size(raw_data_size);
+        int dec32_size = decoded32_size(enc32_size);
+        char *dst = new char[enc32_size]();
+        char *dec_dst = new char[dec32_size]();
 
+        cout << "enc32_size: " << enc32_size << endl;
+        cout << "dec32_size: " << dec32_size << endl;
+        encode32(raw_data, raw_data_size, dst);
+
+        cout << "Закодировано: ";
+        for (int i = 0; i < enc32_size; i++)
+        {
+            cout << dst[i];
+        }
+        cout << endl;
+
+        decode32(dst, enc32_size, dec_dst);
+        cout << "Декодировано: ";
+        for (int i = 0; i < raw_data_size; i++)
+        {
+            cout << std::hex << int(dec_dst[i]) << " " << std::dec;
+        }
+        cout << endl;
+        delete[] dec_dst;
+        delete[] dst;
+        
+        cout << "----------" << endl;
+    }
     /**
      * Задание 8. Функции и макросы с переменным числом параметров.
      */
@@ -415,12 +462,15 @@ int main()
      * Признаком конца списка является нулевое значение.
      */
     {
+
         int nN1 = 5, nN2 = 11, nN3 = 4, nN4 = 7, nN5 = -1;
+        cout << "var_args(nN1, 0): ";
         var_args(nN1, 0);
-        cout << "----------" << endl;
+        cout << "var_args(nN1, nN2, 0): ";
         var_args(nN1, nN2, 0);
-        cout << "----------" << endl;
+        cout << "var_args(nN1, nN2, nN3, nN4, nN5, 0): ";
         var_args(nN1, nN2, nN3, nN4, nN5, 0);
+        
         cout << "----------" << endl;
     }
 
@@ -434,12 +484,15 @@ int main()
 
     {
 #define VAR_ARGS(...) (var_args(__VA_ARGS__, 0))
+        cout << "VAR_ARGS(nN1): ";
         int nN1 = 5, nN2 = 11, nN3 = 4, nN4 = 7, nN5 = -1;
         VAR_ARGS(nN1);
-        cout << "----------" << endl;
+        cout << "VAR_ARGS(nN1, nN2): ";
         VAR_ARGS(nN1, nN2);
-        cout << "----------" << endl;
+        cout << "VAR_ARGS(nN1, nN2, nN3, nN4, nN5): ";
         VAR_ARGS(nN1, nN2, nN3, nN4, nN5);
+        
+        cout << "----------" << endl;
     }
 
     /**

@@ -20,6 +20,11 @@ void day_of_month(const int dayOfYear, const int year, int &day, int &month, con
 
 int *add_unique(int arr[], int &n, const int new_value);
 
+int encoded32_size(int raw_size);
+int decoded32_size(int encode_size);
+int encode32(const char *raw_data, int raw_size, char *dst);
+int decode32(const char *encoded_data, int encoded_size, char *dst);
+
 int sum_of_natural_numbers(const int N);
 void var_args(int first, ...);
 
