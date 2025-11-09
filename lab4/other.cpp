@@ -176,7 +176,9 @@ int encode32(const char *raw_data, int raw_size, char *dst)
     {
         return 1;
     }
-    int cur_bit = 4, cur_enc_byte = 0, cur_enc_five = 0;
+    int cur_bit = 4;      // в такую степень возводится
+    int cur_enc_byte = 0; // текущий код символа
+    int cur_enc_five = 0; // индекс добавления в dst
     for (int byte = 0; byte < raw_size; byte++)
     {
         for (int bit = 0; bit < 8; bit++)
@@ -205,7 +207,9 @@ int decode32(const char *encoded_data, int encoded_size, char *dst)
         return 1;
     }
 
-    int cur_dec_byte = 0, bits_in_dec_byte = 0, cur_dst_index = 0;
+    int cur_dec_byte = 0;     // текущий  декодирования
+    int bits_in_dec_byte = 0; // сколько бит в текущем декодируемом
+    int cur_dst_index = 0;    // индекс dst
     for (int byte = 0; byte < encoded_size; byte++)
     {
         if ((encoded_data[byte] < 'A' || encoded_data[byte] > 'Z') && (encoded_data[byte] < '1' || encoded_data[byte] > '6'))
@@ -213,7 +217,7 @@ int decode32(const char *encoded_data, int encoded_size, char *dst)
             return 2;
         }
 
-        int char_index = 0;
+        int char_index = 0; // индекс в массиве ENCODING_CHARS(cur_enc_byte в encode)
         for (; ENCODING_CHARS[char_index] != encoded_data[byte]; char_index++)
             ;
 
@@ -244,7 +248,8 @@ void var_args(int first, ...)
         value = va_arg(args, int);
     }
     va_end(args);
-    std::cout << '\n' << "Количество: " << count << '\n';
+    std::cout << '\n'
+              << "Количество: " << count << '\n';
 }
 
 int *my_min(int arr[], const int size)

@@ -417,6 +417,9 @@ int main()
      * изначальными.
      */
     {
+        // TODO: добавить доп. исполняемый файл для тестирования
+        //       где эта функция будет тестироваться с данными
+        //       разной длины (цикл по длине от 1 до 40)
         char raw_data[] = {0x1e, 0x47};
         int raw_data_size = sizeof(raw_data) / sizeof(raw_data[0]);
         int enc32_size = encoded32_size(raw_data_size);
