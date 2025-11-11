@@ -7,6 +7,8 @@
 #include <cstdio>
 #include "other.h"
 #include <cmath>
+#include "book.h"
+Book globalBook;
 using namespace std;
 int main()
 {
@@ -26,7 +28,6 @@ int main()
         double A, B, C;
         printf("Введите коэффициенты A, B, C: ");
         scanf("%lf %lf %lf", &A, &B, &C);
-
         /**
          * Задание 1.2.
          *
@@ -82,8 +83,9 @@ int main()
             double a, b;
             char op;
             printf("Введите выражение (формат: a {+-*/^} b): ");
-            scanf("%lf %c %lf", &a, &op, &b);
 
+            clean_buffer();
+            scanf(" %lf %c %lf", &a, &op, &b);
             switch (op)
             {
             case '+':
@@ -111,6 +113,7 @@ int main()
             {
                 printf("Результат: %.10g %c %.10g = %.10g\n", a, op, b, operation(a, b));
             }
+            clean_buffer();
             printf("\nХотите продолжить? (Y/N): ");
             scanf(" %c", &choice);
             choice = toupper(choice);
@@ -160,7 +163,6 @@ int main()
         /** Печать исходного массива */
         printf("До сортировки: ");
         print_array(reinterpret_cast<char *>(&arr[0]), nTotal, sizeof(int), print_int);
-        printf("\n");
         // sort(reinterpret_cast<char*>(&nAr[0]), nTotal, sizeof(int),
         //      SwapInt, CmpInt);
         sort(reinterpret_cast<char *>(&arr[0]), nTotal, sizeof(int), swap_int, cmp_int);
@@ -169,7 +171,7 @@ int main()
         printf("После сортировки: ");
         print_array(reinterpret_cast<char *>(&arr[0]), nTotal, sizeof(int), print_int);
         delete[] arr;
-        printf("\n\n-----------------------------\n\n");
+        printf("\n-----------------------------\n\n");
     }
 
     /**
@@ -191,14 +193,13 @@ int main()
         /** Печать исходного массива */
         printf("До сортировки: ");
         print_array(reinterpret_cast<char *>(&arr[0]), nTotal, sizeof(double), print_double);
-        printf("\n");
         sort(reinterpret_cast<char *>(&arr[0]), nTotal, sizeof(double), swap_double, cmp_double);
 
         /** Печать результатов сортировки */
         printf("После сортировки: ");
         print_array(reinterpret_cast<char *>(&arr[0]), nTotal, sizeof(double), print_double);
         delete[] arr;
-        printf("\n\n-----------------------------\n\n");
+        printf("\n-----------------------------\n\n");
     }
     /**
      * Задание 2.2.3.
@@ -212,14 +213,13 @@ int main()
         int nTotal = sizeof(arr) / sizeof(*arr);
         /** Печать исходного массива */
         printf("До сортировки: ");
-        print_array(reinterpret_cast<char*>(arr), nTotal, sizeof(char *), print_str);
-        printf("\n");
-        sort(reinterpret_cast<char*>(arr), nTotal, sizeof(char *), swap_str, cmp_str);
+        print_array(reinterpret_cast<char *>(arr), nTotal, sizeof(char *), print_str);
+        sort(reinterpret_cast<char *>(arr), nTotal, sizeof(char *), swap_str, cmp_str);
 
         /** Печать результатов сортировки */
         printf("После сортировки: ");
-        print_array(reinterpret_cast<char*>(arr), nTotal, sizeof(char *), print_str);
-        printf("\n\n-----------------------------\n\n");
+        print_array(reinterpret_cast<char *>(arr), nTotal, sizeof(char *), print_str);
+        printf("\n-----------------------------\n\n");
     }
 
     /**
@@ -240,6 +240,51 @@ int main()
      * функций (из второго массива), примите от пользователя номер функции,
      * после чего вызовите функцию для какого-нибудь массива.
      */
+    {
+        void (*functions[])(int[], int) = {
+            print_max,
+            print_min,
+            sort_asc,
+            sort_desc};
+        int size = 15;
+        int *arr = new int[size];
+        for (int i = 0; i < size; ++i)
+        {
+            arr[i] = rand() % 100;
+        }
+
+        printf("Текущий массив: ");
+        print_array(reinterpret_cast<char *>(arr), size, sizeof(int), print_int);
+        printf("1 - печатает максимальный элемент\n");
+        printf("2 - печатает минимальный элемент\n");
+        printf("3 - сортирует по возрастанию и выводит на печать\n");
+        printf("4 - сортирует по убыванию и выводит на печать\n\n");
+        char choice;
+        do
+        {
+            int op;
+            printf("Введите № операции: ");
+            clean_buffer();
+            scanf(" %d", &op);
+            if (op >= 1 && op <= 4)
+            {
+                functions[op - 1](arr, size);
+            }
+            else
+            {
+                printf("Ошибка: неподдерживаемая операция '%d'\n", op);
+            }
+
+            clean_buffer();
+            printf("Хотите продолжить? (Y/N): ");
+            scanf(" %c", &choice);
+            choice = toupper(choice);
+
+        } while (choice == 'Y');
+        delete[] arr;
+
+        printf("\n-----------------------------\n\n");
+    }
 
     /**
      * Задание 2.4. Метод прямоугольников.
@@ -256,7 +301,28 @@ int main()
      *
      * Проверьте функцию на разных вещественных функциях (линейных, параболах,
      * exp, sin) и сравните полученные результаты с теоретическими.
+     *
      */
+    {
+        double theoretical, our, a = 5, b = 15;
+        int n = 10000; // с 1000000 совпадает
+        our = integrate(linear, a, b, n);
+        theoretical = linear_integral(a, b);
+        compare_results("f(x)=x", our, theoretical, a, b, n);
+
+        our = integrate(quadratic, a, b, n);
+        theoretical = quadratic_integral(a, b);
+        compare_results("f(x)=x^2", our, theoretical, a, b, n);
+
+        our = integrate(sinus, a, b, n);
+        theoretical = sinus_integral(a, b);
+        compare_results("f(x)=sin(x)", our, theoretical, a, b, n);
+
+        our = integrate(exponenta, a, b, n);
+        theoretical = exponenta_integral(a, b);
+        compare_results("f(x)=exp(x)", our, theoretical, a, b, n);
+        printf("\n-----------------------------\n\n");
+    }
 
     /**
      * Задание 3. Структуры С.
@@ -290,40 +356,79 @@ int main()
      * Подумайте: от чего зависит объем выделяемой памяти?
      */
 
-    /**
-     * Задание 3.1.3.
-     *
-     * Заполните поля созданных объектов.
-     *
-     * Замечание: если для хранения строки используется массив, необходимо
-     * предусмотреть "защиту" от выхода за границы массива.
-     */
+    {
+        Book localBook;
+        static Book staticBook;
+        Book *dynamicBook = new Book();
 
-    /**
-     * Задание 3.1.4.
-     *
-     * Напишите функцию, выводящую на экран реквизиты книги.
-     *
-     * Подумайте: как эффективнее передавать экземпляр Book в функцию.
-     *
-     * Для вывода на консоль используйте функцию стандартной библиотеки printf.
-     */
+        printf("Размер структуры Book=%zu байт\n", sizeof(Book));
+        printf("Адрес globalBook=%p\n", &globalBook);
+        printf("Адрес localBook=%p\n", &localBook);
+        printf("Адрес staticBook=%p\n", &staticBook);
+        printf("Адрес dynamicBook=%p\n", dynamicBook);
 
-    /**
-     * Задание 3.1.5.
-     *
-     * Напишите функцию для формирования полей структуры. Для ввода используйте
-     * функцию стандартной библиотеки scanf.
-     *
-     * Замечание: неплохо заложить в такую функцию возможность проверки
-     * корректности введенного значения, например, год издания не может быть
-     * меьше, чем... (год появления письменности), категорию ползователь должен
-     * выбирать из существующих, цена не может быть отрицательной...
-     *
-     * Кроме этого необходимо проверить и ошибки другого рода: программа
-     * ожидает число, а пользователь ввел случайно букву.
-     */
+        printf("\nСодержимое полей неинициализированного localBook (совпадает с остальными)\n");
+        print_book(globalBook);
+        print_book(localBook);
+        print_book(staticBook);
+        print_book(*dynamicBook);
+        printf("\n");
+        /**
+         * Задание 3.1.3.
+         *
+         * Заполните поля созданных объектов.
+         *
+         * Замечание: если для хранения строки используется массив, необходимо
+         * предусмотреть "защиту" от выхода за границы массива.
+         */
+        const char *author = "А.С.Пушкин";
+        const char *title = "Капитанская дочка";
+        const char *category = "Роман";
+        initialize_book(globalBook, author, title, 1836, 639.9, category);
+        initialize_book(localBook, author, title, 1836, 639.9, category);
+        initialize_book(staticBook, author, title, 1836, 639.9, category);
+        initialize_book(*dynamicBook, author, title, 1836, 639.9, category);
+        /**
+         * Задание 3.1.4.
+         *
+         * Напишите функцию, выводящую на экран реквизиты книги.
+         *
+         * Подумайте: как эффективнее передавать экземпляр Book в функцию.
+         *
+         * Для вывода на консоль используйте функцию стандартной библиотеки printf.
+         */
+        printf("globalBook: ");
+        print_book(globalBook);
+        printf("localBook: ");
+        print_book(localBook);
+        printf("staticBook: ");
+        print_book(staticBook);
+        printf("dynamicBook: ");
+        print_book(*dynamicBook);
 
+        /**
+         * Задание 3.1.5.
+         *
+         * Напишите функцию для формирования полей структуры. Для ввода используйте
+         * функцию стандартной библиотеки scanf.
+         *
+         * Замечание: неплохо заложить в такую функцию возможность проверки
+         * корректности введенного значения, например, год издания не может быть
+         * меьше, чем... (-3000 год появления письменности), категорию ползователь должен
+         * выбирать из существующих, цена не может быть отрицательной...
+         *
+         * Кроме этого необходимо проверить и ошибки другого рода: программа
+         * ожидает число, а пользователь ввел случайно букву.
+         */
+        user_input_book(localBook);
+        printf("\n");
+        print_book(localBook);
+        free_book(globalBook);
+        free_book(localBook);
+        free_book(staticBook);
+        free_book(*dynamicBook);
+        delete dynamicBook;
+    }
     /**
      * Задание 3.2. Матричные операции.
      */

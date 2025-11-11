@@ -122,18 +122,7 @@ int cmp_str(void *p1, void *p2)
 using namespace std;
 int main(int argc, char const *argv[])
 {
-    {
-        const char *arr[] = {"QQQ", "SDF", "ABC"};
-        int nTotal = sizeof(arr) / sizeof(*arr);
-        /** Печать исходного массива */
-        printf("До сортировки: ");
-        print_array(reinterpret_cast<char *>(arr), nTotal, sizeof(char *), print_str);
-        printf("\n");
-        sort(reinterpret_cast<char *>(arr), nTotal, sizeof(char *), swap_str, cmp_str);
-
-        /** Печать результатов сортировки */
-        printf("После сортировки: ");
-        print_array(reinterpret_cast<char *>(arr), nTotal, sizeof(char *), print_str);
-        printf("\n\n-----------------------------\n\n");
-    }
+    char *category;
+    scanf("%[^\n]", category);
+    printf("%s", category);
 }
