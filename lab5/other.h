@@ -35,8 +35,3 @@ double sinus_integral(double a, double b);
 double exponenta(double x);
 double exponenta_integral(double a, double b);
 void compare_results(const char *func_name, double our_value, double theoretical_value, double a, double b, int n);
-
-void print_book(Book book);
-void initialize_book(Book &book, const char *author, const char *title, int publicationYear, double price, const char *category);
-void user_input_book(Book &book);
-void free_book(Book &book);

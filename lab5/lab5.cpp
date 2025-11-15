@@ -8,6 +8,7 @@
 #include "other.h"
 #include <cmath>
 #include "book.h"
+#include "matrix.h"
 Book globalBook;
 using namespace std;
 int main()
@@ -104,7 +105,7 @@ int main()
                 operation = pow; // из cmath
                 break;
             default:
-                printf("Ошибка: неподдерживаемая операция '%c'\n", op);
+                printf("Ошибка: неподдерживаемая операция\n");
                 operation = nullptr;
                 break;
             }
@@ -272,7 +273,7 @@ int main()
             }
             else
             {
-                printf("Ошибка: неподдерживаемая операция '%d'\n", op);
+                printf("Ошибка: неподдерживаемая операция\n");
             }
 
             clean_buffer();
@@ -372,7 +373,7 @@ int main()
         print_book(localBook);
         print_book(staticBook);
         print_book(*dynamicBook);
-        printf("\n");
+        printf("\n-----------------------------\n\n");
         /**
          * Задание 3.1.3.
          *
@@ -405,6 +406,7 @@ int main()
         print_book(staticBook);
         printf("dynamicBook: ");
         print_book(*dynamicBook);
+        printf("\n-----------------------------\n\n");
 
         /**
          * Задание 3.1.5.
@@ -428,6 +430,7 @@ int main()
         free_book(staticBook);
         free_book(*dynamicBook);
         delete dynamicBook;
+        printf("\n-----------------------------\n\n");
     }
     /**
      * Задание 3.2. Матричные операции.
@@ -490,6 +493,29 @@ int main()
      * Фибоначчи: 1 и 0. Выполняйте эту формулу итеративно и выведите первые 40
      * чисел Фибоначчи.
      */
+    {
+        Matrix fib;     //[[1, 1], [1, 0]]
+        Matrix current; //[F1, F0] = [1, 0]
+        Matrix temp;
+        m_zero(&current, 2, 1);
+        m_zero(&fib, 2, 2);
+        m_set(&fib, 0, 0, 1.0);
+        m_set(&fib, 0, 1, 1.0);
+        m_set(&fib, 1, 0, 1.0);
+        m_set(&current, 0, 0, 1.0);
+        printf("Числа Фибоначчи\n");
+        printf("%d число: %.10g\n", 1, m_get(&current, 1, 0));
+        for (int i = 1; i < 40; i++)
+        {
+            printf("%d число: %.10g\n", i + 1, m_get(&current, 0, 0));
+            m_mult(&fib, &current, &temp);
+            m_free(&current);
+            m_copy(&temp, &current);
+            m_free(&temp);
+        }
 
+        m_free(&current);
+        m_free(&fib);
+    }
     return 0;
 }
