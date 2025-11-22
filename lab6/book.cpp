@@ -10,11 +10,11 @@ void clean_buffer()
 
 void print_book(Book book)
 {
-    printf("author='%s', ", book.author);
-    printf("title='%s', ", book.title);
-    printf("publicationYear=%d, ", book.publicationYear);
-    printf("price=%.10g, ", book.price);
-    printf("category='%s'.\n", book.category);
+    printf("Автор='%s', ", book.author);
+    printf("Название='%s', ", book.title);
+    printf("Год выпуска=%d, ", book.publicationYear);
+    printf("Цена=%.10g, ", book.price);
+    printf("Жанр='%s'.\n", book.category);
 }
 
 void free_book(Book &book)
@@ -54,26 +54,28 @@ void user_input_book(Book &book)
     const char *categories[] = {"ROMANCE", "FAIRY TAIL", "NOVELLA", "MANGA"};
 
     printf("Введите автора книги: ");
-    clean_buffer();
     scanf("%1023[^\n]", author);
+    clean_buffer();
 
     printf("Введите название книги: ");
-    clean_buffer();
     scanf("%1023[^\n]", title);
+    clean_buffer();
     do
     {
         printf("Введите год публикации книги: ");
-        clean_buffer();
-        if (scanf("%d", &publicationYear) != 1)
+        if (scanf(" %d", &publicationYear) != 1)
         {
             printf("Ошибка: введите целое число!\n");
             publicationYear = -3001;
+            clean_buffer();
             continue;
         }
         if (publicationYear < -3000)
         {
             printf("Неверный год публикации!\n");
+            clean_buffer();
         }
+
     } while (publicationYear < -3000);
 
     do

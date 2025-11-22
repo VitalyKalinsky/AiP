@@ -3,11 +3,11 @@
 
 struct Book
 {
-    const char *author;
-    const char *title;
+    char *author;
+    char *title;
     int publicationYear;
     double price;
-    const char *category;
+    char *category;
 };
 void clean_buffer();
 void print_book(Book book);
