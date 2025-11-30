@@ -1,6 +1,8 @@
 #include "library.h"
 #include "book.h"
+#include "ui.h"
 #include <iostream>
+
 /**
  * Практическое занятие №6. Консольное приложение.
  *
@@ -74,13 +76,15 @@ int main()
      * 7. Действие по вашему варианту.
      * 8. Выйти из программы.
      */
+
     Library *library = create_library();
-    Book *book1 = new Book();
-    Book *book2 = new Book();
-    Book *book3 = new Book();
-    initialize_book(*book1, "А.С.Пушкин", "Капитанская дочка", 1836, 639.9, "Роман");
-    initialize_book(*book2, "Ф.М.Достоевский", "Преступление и Наказание", 1678, 315.5, "Роман");
-    initialize_book(*book3, "В.И.Калинский", "Проект APIKL", 2025, 0.15, "Научная работа");
+    
+    // Показать главное меню
+    show_main_menu(library);
+    
+    free_library(library);
+    return 0;
+
     /**
      * Задание 2. Печать картотеки.
      *
@@ -96,11 +100,6 @@ int main()
      * При этом необходимо обработать некорректный пользовательский ввод.
      */
 
-    add_book(library, book1);
-    add_book(library, book2);
-    add_book(library, book3);
-
-    print_library(library);
 
     /**
      * Задание 4. Сортировка книг.
@@ -115,30 +114,7 @@ int main()
      *
      * Задание со * (опционально): реализуйте сортировку по нескольким полям.
      */
-    // case 1: // по названию
-    // case 2: // по автору
-    // case 3: // по году
-    // case 4: // по цене
-    // case 5: // по жанру
-    printf("\n");
-    sort(library, 1, 1);
-    print_library(library);
-    printf("\n");
-    sort(library, 2, 1);
-    print_library(library);
-    printf("\n");
-    sort(library, 3, 1);
-    print_library(library);
-    printf("\n");
-    sort(library, 4, 1);
-    print_library(library);
-    printf("\n");
-    sort(library, 5, 1);
-    print_library(library);
-    printf("\n");
-    sort(library, 6, 1);
-    print_library(library);
-    printf("\n");
+
     /**
      * Задание 5. Поиск книг.
      *
@@ -147,12 +123,6 @@ int main()
      * - по автору,
      * - по жанру.
      */
-
-    // char field[1024];
-    // printf("Введите поле для поиска: ");
-    // scanf("%1023[^\n]", field);
-    // clean_buffer();
-    // find_books_by_field(library, field, 3);
 
     /**
      * Задание 6. Удаление книги.
@@ -164,28 +134,7 @@ int main()
      * Задание со * (опционально): реализуйте "отмену" последних k-операций.
      */
 
-    delete_book(library, 2);
-    print_library(library);
-    printf("----------\n");
 
-    delete_book(library, 1);
-    print_library(library);
-    printf("----------\n");
-
-    delete_book(library, 1);
-    print_library(library);
-    printf("----------\n");
-
-    book1 = new Book();
-    book2 = new Book();
-    book3 = new Book();
-    initialize_book(*book1, "А.С.Пушкин", "Капитанская дочка", 1836, 639.9, "Роман");
-    initialize_book(*book2, "Ф.М.Достоевский", "Преступление и Наказание", 1678, 315.5, "Роман");
-    initialize_book(*book3, "В.И.Калинский", "Проект APIKL", 2025, 0.15, "Научная работа");
-    add_book(library, book1);
-    add_book(library, book2);
-    add_book(library, book3);
-    print_library(library);
     /**
      * Задание 7. Изменение книги.
      *
@@ -193,40 +142,6 @@ int main()
      * добавлении книги, обработайте ошибки.
      */
 
-    char *new_category = new char[1024];
-    printf("Введите поле 1, 2, 5: ");
-    scanf("%1023[^\n]", new_category);
-    change_book(library, 1, 1, new_category);
-    change_book(library, 1, 2, new_category);
-    change_book(library, 1, 5, new_category);
-    change_book(library, 2, 1, new_category);
-    change_book(library, 2, 2, new_category);
-    change_book(library, 2, 5, new_category);
-    change_book(library, 3, 1, new_category);
-    change_book(library, 3, 2, new_category);
-    change_book(library, 3, 5, new_category);
-    print_library(library);
-    delete[] new_category;
-
-    int new_year = 0;
-    printf("Введите поле 3: ");
-    clean_buffer();
-    scanf("%d", &new_year);
-    change_book(library, 1, 3, &new_year);
-    change_book(library, 2, 3, &new_year);
-    change_book(library, 3, 3, &new_year);
-    print_library(library);
-
-    double new_value = 0.0;
-    clean_buffer();
-    printf("Введите поле 4: ");
-    scanf("%lf", &new_value);
-    change_book(library, 1, 4, &new_value);
-    change_book(library, 2, 4, &new_value);
-    change_book(library, 3, 4, &new_value);
-    print_library(library);
-    printf("%lf\n", library->books[1]->price);
-    
     /**
      * Задание 8. Запись в файл и чтение из файла.
      *
@@ -236,6 +151,5 @@ int main()
      * Обработайте ошибки связанные с выбором несуществующего файла или файла с
      * неверным форматом.
      */
-    free_library(library);
     return 0;
 }
