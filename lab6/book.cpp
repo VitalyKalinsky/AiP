@@ -51,7 +51,6 @@ void user_input_book(Book &book)
 
     int publicationYear;
     double price;
-    const char *categories[] = {"ROMANCE", "FAIRY TAIL", "NOVELLA", "MANGA"};
 
     printf("Введите автора книги: ");
     scanf("%1023[^\n]", author);
@@ -60,6 +59,7 @@ void user_input_book(Book &book)
     printf("Введите название книги: ");
     scanf("%1023[^\n]", title);
     clean_buffer();
+    
     do
     {
         printf("Введите год публикации книги: ");
@@ -95,34 +95,9 @@ void user_input_book(Book &book)
         }
     } while (price < 0);
 
-    bool flag = true;
-    do
-    {
-        printf("Введите жанр книги (Romance, Fairy tail, Novella, Manga): ");
-        clean_buffer();
-        scanf("%1023[^\n]", category);
-
-        for (int i = 0; category[i]; i++)
-        {
-            category[i] = std::toupper(category[i]);
-        }
-
-        flag = true;
-        for (int i = 0; i < 4; i++)
-        {
-            if (strcmp(category, categories[i]) == 0)
-            {
-                flag = false;
-                break;
-            }
-        }
-
-        if (flag)
-        {
-            printf("Неверный жанр!\n");
-        }
-
-    } while (flag);
+    printf("Введите жанр книги: ");
+    clean_buffer();
+    scanf("%1023[^\n]", category);
 
     initialize_book(book, author, title, publicationYear, price, category);
 }

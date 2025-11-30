@@ -368,7 +368,11 @@ void import_library(Library *library)
         if (fscanf(file, "%lf", &price) != 1) break;
         fgetc(file);
         if (fgets(category, sizeof(category), file) == NULL) break;
-
+        printf("Автор='%s', ", author);
+        printf("Название='%s', ", title);
+        printf("Год выпуска=%d, ", year);
+        printf("Цена=%.10g, ", price);
+        printf("Жанр='%s'.\n", category);
         author[strcspn(author, "\n")] = 0;
         title[strcspn(title, "\n")] = 0;
         category[strcspn(category, "\n")] = 0;
