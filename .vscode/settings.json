@@ -50,6 +50,9 @@
         "typeinfo": "cpp",
         "variant": "cpp",
         "cstdarg": "cpp",
-        "cstring": "cpp"
+        "cstring": "cpp",
+        "cinttypes": "cpp",
+        "cassert": "cpp",
+        "codecvt": "cpp"
     }
 }

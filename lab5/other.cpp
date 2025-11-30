@@ -49,6 +49,7 @@ using namespace std;
 void print_array(char *pcFirst, const int arrSize, int typeSize, void (*type_print)(void *))
 {
     assert(pcFirst != nullptr && arrSize > 0 && typeSize > 0);
+    
     cout << "{";
     char *current = pcFirst - typeSize;
     for (int i = 0; i < arrSize; i++)

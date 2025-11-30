@@ -126,33 +126,3 @@ void user_input_book(Book &book)
 
     initialize_book(book, author, title, publicationYear, price, category);
 }
-
-// void set_author()
-// {
-//     int cur_size = 10;
-//     char *cString = new char[cur_size]();
-//     printf("Введите строку: ");
-//     char c = cin.get();
-//     int cur_pos = 0;
-//     while (c != '\n')
-//     {
-//         // расширение массива
-//         if (cur_pos >= cur_size - 1) // не >, тк тогда не вместится \0 и будет переполнение, не получится вписать (*)
-//         {
-//             char *new_cString = new char[cur_size * 2]();
-//             for (int i = 0; i < cur_size; i++)
-//             {
-//                 new_cString[i] = cString[i];
-//             }
-//             delete[] cString;
-//             cString = new_cString;
-//             cur_size *= 2;
-//         }
-
-//         cString[cur_pos] = c;
-//         cur_pos++;
-//         c = cin.get();
-//     }
-
-//     cString[cur_pos] = '\0';
-// }

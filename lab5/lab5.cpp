@@ -511,7 +511,7 @@ int main()
             m_mult(&fib, &current, &temp);
             m_free(&current);
             m_copy(&temp, &current);
-            m_free(&temp);
+            m_free(&temp); 
         }
 
         m_free(&current);

@@ -5,18 +5,6 @@
 #include <cstdio>
 #include <cstring>
 
-void clean_input_buffer()
-{
-    while (getchar() != '\n')
-        ;
-}
-
-void wait_for_enter()
-{
-    printf("\nНажмите Enter для продолжения...");
-    clean_input_buffer();
-}
-
 void show_main_menu(Library* library)
 {
     int choice;
@@ -40,10 +28,10 @@ void show_main_menu(Library* library)
         
         if (scanf("%d", &choice) != 1) {
             printf("Ошибка: введите число от 0 до 9!\n");
-            clean_input_buffer();
+            clean_buffer();
             continue;
         }
-        clean_input_buffer();
+        clean_buffer();
         
         switch (choice) {
             case 1:
@@ -55,7 +43,7 @@ void show_main_menu(Library* library)
                 } else {
                     print_library(library);
                 }
-                wait_for_enter();
+                ;
                 break;
                 
             case 2: {
@@ -66,7 +54,7 @@ void show_main_menu(Library* library)
                 user_input_book(*new_book);
                 add_book(library, new_book);
                 printf("Книга успешно добавлена!\n");
-                wait_for_enter();
+                ;
                 break;
             }
                 
@@ -76,7 +64,7 @@ void show_main_menu(Library* library)
                 printf("════════════════════════════════════════\n");
                 if (library->cur_index == 0) {
                     printf("Библиотека пуста - нечего удалять.\n");
-                    wait_for_enter();
+                    ;
                     break;
                 }
                 
@@ -87,12 +75,12 @@ void show_main_menu(Library* library)
                 printf("Введите номер книги для удаления: ");
                 if (scanf("%d", &index) != 1 || index < 1 || index > library->cur_index) {
                     printf("Ошибка: неверный номер книги!\n");
-                    clean_input_buffer();
+                    clean_buffer();
                 } else {
                     delete_book(library, index);
                     printf("Книга успешно удалена!\n");
                 }
-                wait_for_enter();
+                ;
                 break;
             }
                 
@@ -113,7 +101,7 @@ void show_main_menu(Library* library)
                 printf("           СОХРАНЕНИЕ В ФАЙЛ\n");
                 printf("════════════════════════════════════════\n");
                 export_library(library);
-                wait_for_enter();
+                ;
                 break;
                 
             case 8:
@@ -121,7 +109,7 @@ void show_main_menu(Library* library)
                 printf("           ЗАГРУЗКА ИЗ ФАЙЛА\n");
                 printf("════════════════════════════════════════\n");
                 import_library(library);
-                wait_for_enter();
+                ;
                 break;
                 
             case 9:
@@ -129,7 +117,7 @@ void show_main_menu(Library* library)
                 printf("    ПОИСК КНИГИ С МИНИМАЛЬНЫМ ГОДОМ\n");
                 printf("════════════════════════════════════════\n");
                 find_min_year_book_after_users_input(library);
-                wait_for_enter();
+                ;
                 break;
                 
             case 0:
@@ -138,7 +126,7 @@ void show_main_menu(Library* library)
                 
             default:
                 printf("Ошибка: неверный выбор! Введите число от 0 до 9.\n");
-                wait_for_enter();
+                ;
                 break;
         }
     } while (choice != 0);
@@ -148,7 +136,7 @@ void show_sort_menu(Library* library)
 {
     if (library->cur_index == 0) {
         printf("Библиотека пуста - нечего сортировать.\n");
-        wait_for_enter();
+        ;
         return;
     }
     
@@ -168,8 +156,8 @@ void show_sort_menu(Library* library)
     
     if (scanf("%d", &field) != 1 || field < 1 || field > 5) {
         printf("Ошибка: неверный выбор поля!\n");
-        clean_input_buffer();
-        wait_for_enter();
+        clean_buffer();
+        ;
         return;
     }
     
@@ -181,22 +169,22 @@ void show_sort_menu(Library* library)
     
     if (scanf("%d", &order) != 1 || (order != 1 && order != 2)) {
         printf("Ошибка: неверный выбор порядка!\n");
-        clean_input_buffer();
-        wait_for_enter();
+        clean_buffer();
+        ;
         return;
     }
     
-    clean_input_buffer();
+    clean_buffer();
     sort(library, field, order == 1);
     printf("Сортировка завершена успешно!\n");
-    wait_for_enter();
+    ;
 }
 
 void show_search_menu(Library* library)
 {
     if (library->cur_index == 0) {
         printf("Библиотека пуста - нечего искать.\n");
-        wait_for_enter();
+        ;
         return;
     }
     
@@ -215,11 +203,11 @@ void show_search_menu(Library* library)
     
     if (scanf("%d", &choice) != 1 || choice < 1 || choice > 3) {
         printf("Ошибка: неверный выбор!\n");
-        clean_input_buffer();
-        wait_for_enter();
+        clean_buffer();
+        ;
         return;
     }
-    clean_input_buffer();
+    clean_buffer();
     
     switch (choice) {
         case 1:
@@ -235,20 +223,20 @@ void show_search_menu(Library* library)
     
     if (scanf("%1023[^\n]", search_term) != 1) {
         printf("Ошибка ввода!\n");
-        clean_input_buffer();
-        wait_for_enter();
+        clean_buffer();
+        ;
         return;
     }
     
     find_books_by_field(library, search_term, choice);
-    wait_for_enter();
+    ;
 }
 
 void show_edit_menu(Library* library)
 {
     if (library->cur_index == 0) {
         printf("Библиотека пуста - нечего изменять.\n");
-        wait_for_enter();
+        ;
         return;
     }
     
@@ -263,11 +251,11 @@ void show_edit_menu(Library* library)
     printf("Введите номер книги для изменения: ");
     if (scanf("%d", &book_index) != 1 || book_index < 1 || book_index > library->cur_index) {
         printf("Ошибка: неверный номер книги!\n");
-        clean_input_buffer();
-        wait_for_enter();
+        clean_buffer();
+        ;
         return;
     }
-    clean_input_buffer();
+    clean_buffer();
     
     printf("\nВыберите поле для изменения:\n");
     printf("1. Автор\n");
@@ -280,11 +268,11 @@ void show_edit_menu(Library* library)
     
     if (scanf("%d", &field) != 1 || field < 1 || field > 5) {
         printf("Ошибка: неверный выбор поля!\n");
-        clean_input_buffer();
-        wait_for_enter();
+        clean_buffer();
+        ;
         return;
     }
-    clean_input_buffer();
+    clean_buffer();
     
     Book* book = library->books[book_index - 1];
     
@@ -336,6 +324,6 @@ void show_edit_menu(Library* library)
         }
     }
     
-    clean_input_buffer();
-    wait_for_enter();
+    clean_buffer();
+    ;
 }

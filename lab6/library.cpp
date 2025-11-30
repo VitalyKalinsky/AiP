@@ -5,6 +5,7 @@
 #include <iostream>
 #include <climits>
 #include <cstdio>
+
 Library *create_library()
 {
     Library *library = new Library();
@@ -49,7 +50,6 @@ void resize_library(Library *library)
 
 void add_book(Library *library, Book *book)
 {
-    assert(library != nullptr && book != nullptr);
     if (library->cur_index >= library->capacity)
     {
         resize_library(library);
@@ -59,7 +59,7 @@ void add_book(Library *library, Book *book)
     library->cur_index++;
 }
 
-void print_library(Library *library) // TODO: для пустой библиотеки сделать пустой вывод
+void print_library(Library *library)
 {
     for (int i = 0; i < library->cur_index; i++)
     {
@@ -151,30 +151,25 @@ void sort(Library *library, int field, bool ascending)
     printf("Картотека отсортирована ");
     switch (field)
     {
-    case 1: // по названию
+    case 1:
         printf("по названию.\n");
         break;
-    case 2: // по автору
+    case 2:
         printf("по автору.\n");
         break;
-    case 3: // по году
+    case 3:
         printf("по году выпуска.\n");
         break;
-    case 4: // по цене
+    case 4:
         printf("по цене.\n");
         break;
-    case 5: // по жанру
+    case 5:
         printf("по жанру.\n");
         break;
     }
 }
 
-/**
- * 1 - по названию книги,
- * 2 - по автору,
- * 3 - по жанру.
- */
-void find_books_by_field(Library *library, char field[], int choice) // TODO: для пустой библиотеки сделать пустой вывод
+void find_books_by_field(Library *library, char field[], int choice)
 {
     if (library->cur_index == 0)
     {
@@ -238,11 +233,7 @@ void delete_book(Library *library, int index)
     library->cur_index--;
 }
 
-// const char *author; 1
-// const char *title; 2
-// int publicationYear; 3
-// double price; 4
-// const char *category; 5
+
 void change_book(Library *library, int index, int field, void *value)
 {
     if (index < 1 || index > library->cur_index)
@@ -255,23 +246,174 @@ void change_book(Library *library, int index, int field, void *value)
 
     switch (field)
     {
-    case 1: // автор
-        strcpy(book->author, (const char *)value);
+    case 1:
+    { // автор
+        const char *new_author = static_cast<const char *>(value);
+        char *author_copy = new char[strlen(new_author) + 1];
+        strcpy(author_copy, new_author);
+        if (book->author)
+            delete[] book->author;
+        book->author = author_copy;
         break;
-    case 2: // название
-        strcpy(book->title, (const char *)value);
+    }
+    case 2:
+    { // название
+        const char *new_title = static_cast<const char *>(value);
+        char *title_copy = new char[strlen(new_title) + 1];
+        strcpy(title_copy, new_title);
+        if (book->title)
+            delete[] book->title;
+        book->title = title_copy;
         break;
+    }
     case 3: // год издания
         book->publicationYear = *(int *)value;
         break;
     case 4: // цена
         book->price = *(double *)value;
         break;
-    case 5: // жанр
-        strcpy(book->category, (const char *)value);
+    case 5:
+    { // жанр
+        const char *new_category = static_cast<const char *>(value);
+        char *category_copy = new char[strlen(new_category) + 1];
+        strcpy(category_copy, new_category);
+        if (book->category)
+            delete[] book->category;
+        book->category = category_copy;
         break;
+    }
     default:
         printf("Неверное поле для изменения!\n");
         break;
+    }
+}
+
+void export_library(Library *library)
+{
+    if (library->cur_index == 0) {
+        printf("Библиотека пуста - нечего экспортировать.\n");
+        return;
+    }
+
+    char filename[256];
+    printf("Введите имя файла для сохранения: ");
+    if (scanf("%255s", filename) != 1) {
+        printf("Ошибка ввода имени файла!\n");
+        clean_buffer();
+        return;
+    }
+    clean_buffer();
+
+    FILE *file = fopen(filename, "w");
+    if (!file) {
+        printf("Ошибка: не удалось создать файл '%s'!\n", filename);
+        return;
+    }
+
+    fprintf(file, "%d\n", library->cur_index);
+
+    for (int i = 0; i < library->cur_index; i++) {
+        Book *book = library->books[i];
+        fprintf(file, "%s\n", book->author);
+        fprintf(file, "%s\n", book->title);
+        fprintf(file, "%d\n", book->publicationYear);
+        fprintf(file, "%.10g\n", book->price);
+        fprintf(file, "%s\n", book->category);
+    }
+
+    fclose(file);
+    printf("Библиотека успешно экспортирована в файл '%s' (%d книг)\n", filename, library->cur_index);
+}
+
+void import_library(Library *library)
+{
+    char filename[256];
+    printf("Введите имя файла для загрузки: ");
+    if (scanf("%255s", filename) != 1) {
+        printf("Ошибка ввода имени файла!\n");
+        clean_buffer();
+        return;
+    }
+    clean_buffer();
+
+    FILE *file = fopen(filename, "r");
+    if (!file) {
+        printf("Ошибка: не удалось открыть файл '%s'!\n", filename);
+        return;
+    }
+
+    int book_count;
+    if (fscanf(file, "%d", &book_count) != 1 || book_count < 0) {
+        printf("Ошибка: неверный формат файла!\n");
+        fclose(file);
+        return;
+    }
+    fgetc(file);
+
+    if (book_count == 0) {
+        printf("Файл не содержит книг.\n");
+        fclose(file);
+        return;
+    }
+
+    int imported_count = 0;
+    for (int i = 0; i < book_count; i++) {
+        char author[1024], title[1024], category[1024];
+        int year;
+        double price;
+
+        if (fgets(author, sizeof(author), file) == NULL) break;
+        if (fgets(title, sizeof(title), file) == NULL) break;
+        if (fscanf(file, "%d", &year) != 1) break;
+        if (fscanf(file, "%lf", &price) != 1) break;
+        fgetc(file);
+        if (fgets(category, sizeof(category), file) == NULL) break;
+
+        author[strcspn(author, "\n")] = 0;
+        title[strcspn(title, "\n")] = 0;
+        category[strcspn(category, "\n")] = 0;
+
+        Book *new_book = new Book();
+        initialize_book(*new_book, author, title, year, price, category);
+        add_book(library, new_book);
+        imported_count++;
+    }
+
+    fclose(file);
+    printf("Успешно импортировано %d книг из файла '%s'\n", imported_count, filename);
+}
+
+void find_min_year_book_after_users_input(Library *library)
+{
+    if (library->cur_index == 0) {
+        printf("Библиотека пуста - нечего искать.\n");
+        return;
+    }
+
+    int target_year;
+    printf("Введите год для поиска: ");
+    if (scanf("%d", &target_year) != 1) {
+        printf("Ошибка: введите корректный год!\n");
+        clean_buffer();
+        return;
+    }
+    clean_buffer();
+
+    Book *min_year_book = nullptr;
+    int min_year = INT_MAX;
+
+    for (int i = 0; i < library->cur_index; i++) {
+        Book *book = library->books[i];
+        if (book->publicationYear > target_year && book->publicationYear < min_year) {
+            min_year = book->publicationYear;
+            min_year_book = book;
+        }
+    }
+
+    if (min_year_book == nullptr) {
+        printf("Не найдено книг, изданных после %d года.\n", target_year);
+    } else {
+        printf("Книга с самым маленьким годом издания после %d года:\n", target_year);
+        print_book(*min_year_book);
     }
 }
