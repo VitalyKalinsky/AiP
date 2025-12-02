@@ -2,6 +2,7 @@
 #include "book.h"
 #include "ui.h"
 #include <iostream>
+#include "categories.h"
 
 /**
  * Практическое занятие №6. Консольное приложение.
@@ -47,6 +48,8 @@
  * ```
  */
 
+ // TODO: при вводе жанра дать пользователю выбрать из тех жанров, что уже были введены или дать ввести новый
+
 int main()
 {
 
@@ -79,7 +82,6 @@ int main()
 
     Library *library = create_library();
     
-    // Показать главное меню
     show_main_menu(library);
     
     free_library(library);

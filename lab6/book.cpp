@@ -1,6 +1,7 @@
 #include "book.h"
 #include <iostream>
 #include <cstring>
+#include "categories.h" 
 
 void clean_buffer()
 {
@@ -43,7 +44,7 @@ void initialize_book(Book &book, const char *author, const char *title, int publ
     book.category = new_category;
 }
 
-void user_input_book(Book &book)
+void user_input_book(Book &book, CategoriesList *categories)
 {
     char author[1024] = "";
     char title[1024] = "";
@@ -95,9 +96,37 @@ void user_input_book(Book &book)
         }
     } while (price < 0);
 
-    printf("Введите жанр книги: ");
-    clean_buffer();
-    scanf("%1023[^\n]", category);
+    int choice;
+    do {
+        print_categories(categories);
+        printf("\nВыберите категорию (1-%d) или 0 для новой категории: ", categories->count);
+        
+        if (scanf("%d", &choice) != 1) {
+            printf("Ошибка ввода! Введите число.\n");
+            clean_buffer();
+            choice = -1;
+            continue;
+        }
+        clean_buffer();
+        
+        if (choice == 0) {
+            printf("Введите новую категорию: ");
+            scanf("%1023[^\n]", category);
+            clean_buffer();
+            
+            add_category(categories, category);
+            break;
+        }
+        else if (choice >= 1 && choice <= categories->count) {
+            const char *selected = get_category(categories, choice - 1);
+            strcpy(category, selected);
+            break;
+        }
+        else {
+            printf("Неверный выбор! Пожалуйста, выберите от 1 до %d.\n", categories->count);
+        }
+    } while (true);
 
     initialize_book(book, author, title, publicationYear, price, category);
+
 }

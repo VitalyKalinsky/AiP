@@ -1,12 +1,14 @@
 #ifndef LIBRARY_H
 #define LIBRARY_H
 #include "book.h"
+#include "categories.h"
 
 struct Library
 {
     Book **books;
     int capacity;
     int cur_index;
+    CategoriesList *categories;
 };
 Library *create_library();
 void free_library(Library *library);

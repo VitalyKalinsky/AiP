@@ -1,3 +1,3 @@
-if g++ -fsanitize=address lab6.cpp other.cpp book.cpp -o lab6.exe; then 
-cat ./data | ./lab6.exe;
+if g++ -fsanitize=address book.cpp library.cpp ui.cpp lab6.cpp categories.cpp -o library_app; then 
+cat ./data | ./library_app;
 fi 

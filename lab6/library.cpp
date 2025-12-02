@@ -3,7 +3,6 @@
 #include <cassert>
 #include <cstring>
 #include <iostream>
-#include <climits>
 #include <cstdio>
 
 Library *create_library()
@@ -14,6 +13,7 @@ Library *create_library()
 
     library->cur_index = 0;
     library->capacity = 10;
+    library->categories = create_categories_list();
     return library;
 }
 
@@ -28,6 +28,7 @@ void free_library(Library *library)
         }
     }
     delete[] library->books;
+    free_categories_list(library->categories);
     delete library;
 }
 void resize_library(Library *library)
@@ -197,13 +198,13 @@ void find_books_by_field(Library *library, char field[], int choice)
         switch (choice)
         {
         case 1:
-            compare = strcmp(library->books[i]->title, field);
+            compare = strcasecmp(library->books[i]->title, field);
             break;
         case 2:
-            compare = strcmp(library->books[i]->author, field);
+            compare = strcasecmp(library->books[i]->author, field);
             break;
         case 3:
-            compare = strcmp(library->books[i]->category, field);
+            compare = strcasecmp(library->books[i]->category, field);
             break;
         }
         if (compare == 0)
@@ -275,11 +276,14 @@ void change_book(Library *library, int index, int field, void *value)
     case 5:
     { // жанр
         const char *new_category = static_cast<const char *>(value);
+        add_category(library->categories, new_category);
+        
         char *category_copy = new char[strlen(new_category) + 1];
         strcpy(category_copy, new_category);
         if (book->category)
             delete[] book->category;
         book->category = category_copy;
+
         break;
     }
     default:
@@ -368,14 +372,12 @@ void import_library(Library *library)
         if (fscanf(file, "%lf", &price) != 1) break;
         fgetc(file);
         if (fgets(category, sizeof(category), file) == NULL) break;
-        printf("Автор='%s', ", author);
-        printf("Название='%s', ", title);
-        printf("Год выпуска=%d, ", year);
-        printf("Цена=%.10g, ", price);
-        printf("Жанр='%s'.\n", category);
+
         author[strcspn(author, "\n")] = 0;
         title[strcspn(title, "\n")] = 0;
         category[strcspn(category, "\n")] = 0;
+
+        add_category(library->categories, category);
 
         Book *new_book = new Book();
         initialize_book(*new_book, author, title, year, price, category);
@@ -403,21 +405,32 @@ void find_min_year_book_after_users_input(Library *library)
     }
     clean_buffer();
 
-    Book *min_year_book = nullptr;
-    int min_year = INT_MAX;
+    // TODO: если несколько книг имеют наименьший год, вывести все
 
+    int min_year = -3001;
+    Book *book;
     for (int i = 0; i < library->cur_index; i++) {
-        Book *book = library->books[i];
-        if (book->publicationYear > target_year && book->publicationYear < min_year) {
+        book = library->books[i];
+        if (book->publicationYear > target_year && (book->publicationYear < min_year || min_year == -3001)) {
             min_year = book->publicationYear;
-            min_year_book = book;
         }
     }
 
-    if (min_year_book == nullptr) {
+    if (min_year == -3001) {
         printf("Не найдено книг, изданных после %d года.\n", target_year);
-    } else {
-        printf("Книга с самым маленьким годом издания после %d года:\n", target_year);
-        print_book(*min_year_book);
+        return;
+    }
+
+    int count = 1;
+    
+    printf("Книги с самым маленьким годом издания после %d года (в %d году):\n", 
+           target_year, min_year);
+    
+    for (int i = 0; i < library->cur_index; i++) {
+        Book *book = library->books[i];
+        if (book->publicationYear == min_year) {
+            printf("%d. ", count++);
+            print_book(*book);
+        }
     }
 }
